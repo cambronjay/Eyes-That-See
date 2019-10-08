@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Eyes That See</string>
+    <string name="title_activity_main">Eyes That See</string>
+    <string name="package_name">org.eyesthatsee.donate</string>
+    <string name="fileprovider_authority">org.eyesthatsee.donate.fileprovider</string>
+    <string name="custom_url_scheme">org.eyesthatsee.donate</string>
+</resources>
