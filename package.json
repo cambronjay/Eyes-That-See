@@ -4,13 +4,16 @@
     "version": "0.0.1",
     "description": "A mobile application built for Eyes That See, a non-profit organization.",
     "scripts": {
-        "build": "stencil build --prerender npm run native",
-        "native": "npx cap copy",
-        "start": "stencil build --dev --watch --serve",
+        "build": "stencil build --prerender npm run updateNative",
+        "buildAssetsOnly": "stencil build --prerender npm run updateNativeWebAssets",
+        "updateNativeWebAssets": "npx cap copy",
+        "updateNative": "npx cap sync",
+        "start": "stencil build --dev --watch --serve npm run updateNative",
         "test": "stencil test --spec --e2e",
         "test.watch": "stencil test --spec --e2e --watchAll",
         "serve": "stencil serve --root www",
         "generate": "stencil generate",
+        "openXcodeProject": "npx cap open ios",
         "deploy": "npm run build && firebase deploy"
     },
     "dependencies": {
