@@ -4,8 +4,8 @@
     "version": "0.0.1",
     "description": "A mobile application built for Eyes That See, a non-profit organization.",
     "scripts": {
-        "build": "stencil build --prerender npm run updateNative",
-        "buildAssetsOnly": "stencil build --prerender npm run updateNativeWebAssets",
+        "build": "stencil build --prerender && npm run updateNative",
+        "buildAssetsOnly": "stencil build --prerender && npm run updateNativeWebAssets",
         "updateNativeWebAssets": "npx cap copy",
         "updateNative": "npx cap sync",
         "start": "stencil build --dev --watch --serve npm run updateNative",
@@ -18,10 +18,10 @@
     },
     "dependencies": {
         "@capacitor/android": "^1.2.1",
-        "@capacitor/core": "1.2.1",
+        "@capacitor/core": "^1.2.1",
         "@capacitor/ios": "^1.2.1",
         "@ionic/core": "^4.10.0",
-        "@stencil/router": "^1.0.1"
+        "rxjs": "^6.5.3"
     },
     "devDependencies": {
         "@capacitor/cli": "1.2.1",

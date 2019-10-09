@@ -3,11 +3,13 @@
   "short_name": "Eyes That See",
   "start_url": "/",
   "display": "standalone",
-  "icons": [{
-    "src": "assets/icon/icon.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  }],
-  "background_color": "#16161d",
-  "theme_color": "#16161d"
+  "icons": [
+    {
+      "src": "assets/icon/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#3880ff",
+  "theme_color": "#3880ff"
 }

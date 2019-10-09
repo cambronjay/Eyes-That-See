@@ -1,7 +1,0 @@
-{
-  "name": "Eyes That See",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "custom"
-}

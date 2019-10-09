@@ -1,15 +1,15 @@
 import { Component, h } from '@stencil/core';
 
 @Component({
-  tag: 'app-home',
-  styleUrl: 'app-home.css',
+  tag: 'screen-news',
+  styleUrl: 'screen-news.css',
   shadow: true
 })
-export class AppHome {
+export class ScreenNews {
 
   render() {
     return (
-      <div class='app-home'>
+      <div class='screen-news'>
         <p>
           Welcome to the Stencil App Starter.
           You can use this starter to build entire apps all with

@@ -1,5 +1,5 @@
-import { Component, Prop, h } from '@stencil/core';
-import { MatchResults } from '@stencil/router';
+import { Component } from '@stencil/core';
+//import { MatchResults } from '@stencil/router';
 
 @Component({
   tag: 'app-profile',
@@ -7,7 +7,7 @@ import { MatchResults } from '@stencil/router';
   shadow: true
 })
 export class AppProfile {
-  @Prop() match: MatchResults;
+  // @Prop() match: MatchResults;
 
   normalize(name: string): string {
     if (name) {
@@ -17,15 +17,15 @@ export class AppProfile {
   }
 
   render() {
-    if (this.match && this.match.params.name) {
-      return (
-        <div class="app-profile">
-          <p>
-            Hello! My name is {this.normalize(this.match.params.name)}. My name was passed in
-            through a route param!
-          </p>
-        </div>
-      );
-    }
+    // if (this.match && this.match.params.name) {
+    //   return (
+    //     <div class="app-profile">
+    //       <p>
+    //         Hello! My name is {this.normalize(this.match.params.name)}. My name was passed in
+    //         through a route param!
+    //       </p>
+    //     </div>
+    //   );
+    // }
   }
 }
