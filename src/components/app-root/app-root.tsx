@@ -20,24 +20,24 @@ export class AppRoot {
 
   appPages = [
     {
-      title: 'Schedule',
-      url: '/schedule',
-      icon: 'calendar'
+      title: 'News',
+      url: '/news',
+      icon: 'today'
     },
     {
-      title: 'Speakers',
-      url: '/speakers',
-      icon: 'contacts'
+      title: 'Stories',
+      url: '/stories',
+      icon: 'book'
     },
     {
-      title: 'Map',
-      url: '/map',
-      icon: 'map'
+      title: 'Projects',
+      url: '/projects',
+      icon: 'list-box'
     },
     {
       title: 'About',
       url: '/about',
-      icon: 'information-circle'
+      icon: 'people'
     }
   ];
 
@@ -78,28 +78,13 @@ export class AppRoot {
       <ion-router useHash={false}>
         <ion-route-redirect from="/" to={this.hasSeenTutorial ? '/about' : '/tutorial'} />
 
-        <ion-route component="page-tabs">
-          <ion-route url="/schedule" component="tab-schedule">
-            <ion-route component="page-schedule"></ion-route>
-            <ion-route url="/session/:sessionId" component="page-session" componentProps={{ goback: '/schedule' }}></ion-route>
-          </ion-route>
-
-          <ion-route url="/speakers" component="tab-speaker">
-            <ion-route component="page-speaker-list"></ion-route>
-            <ion-route url="/session/:sessionId" component="page-session" componentProps={{ goback: '/speakers' }}></ion-route>
-            <ion-route url="/:speakerId" component="page-speaker-detail"></ion-route>
-          </ion-route>
-
-          <ion-route url="/map" component="tab-map"></ion-route>
-
+        <ion-route component="menu-tabs">
+          <ion-route url="/news" component="tab-news"></ion-route>
+          <ion-route url="/stories" component="tab-stories"></ion-route>
+          <ion-route url="/projects" component="tab-projects"></ion-route>
           <ion-route url="/about" component="tab-about"></ion-route>
         </ion-route>
 
-        <ion-route url="/tutorial" component="page-tutorial"></ion-route>
-        <ion-route url="/login" component="page-login"></ion-route>
-        <ion-route url="/account" component="page-account"></ion-route>
-        <ion-route url="/signup" component="page-signup"></ion-route>
-        <ion-route url="/support" component="page-support"></ion-route>
       </ion-router>
     );
   }

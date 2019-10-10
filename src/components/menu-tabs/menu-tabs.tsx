@@ -1,10 +1,10 @@
 import { Component, Prop, h } from '@stencil/core';
 
 @Component({
-    tag: 'page-tabs',
-    styleUrl: 'page-tabs.css',
+    tag: 'menu-tabs',
+    styleUrl: 'menu-tabs.css',
 })
-export class PageTabs {
+export class MenuTabs {
 
     @Prop({ connect: 'ion-menu-controller' }) menuCtrl: HTMLIonMenuControllerElement;
     //news is instagram/twitter
@@ -15,16 +15,16 @@ export class PageTabs {
     render() {
         return [
             <ion-tabs>
-                <ion-tab tab="tab-news">
+                <ion-tab tab="tab-news" component="screen-news">
                     <ion-nav></ion-nav>
                 </ion-tab>
-                <ion-tab tab="tab-stories">
+                <ion-tab tab="tab-stories" component="screen-stories">
                     <ion-nav></ion-nav>
                 </ion-tab>
-                <ion-tab tab="tab-projects" component="page-projects">
+                <ion-tab tab="tab-projects" component="screen-projects">
                     <ion-nav></ion-nav>
                 </ion-tab>
-                <ion-tab tab="tab-about" component="page-about">
+                <ion-tab tab="tab-about" component="screen-about">
                     <ion-nav></ion-nav>
                 </ion-tab>
 
