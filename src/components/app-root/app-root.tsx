@@ -98,12 +98,11 @@ export class AppRoot {
           <ion-menu content-id="menu-content">
             <ion-header>
               <ion-toolbar>
-                <ion-title>Menu</ion-title>
+                <ion-title>Navigate</ion-title>
               </ion-toolbar>
             </ion-header>
             <ion-content forceOverscroll={false}>
               <ion-list>
-                <ion-list-header>Navigate</ion-list-header>
 
                 {this.appPages.map((p) => (
                   <ion-menu-toggle autoHide={false}>
