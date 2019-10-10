@@ -10,8 +10,8 @@ import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 
 export namespace Components {
   interface AppRoot {}
-  interface PageAbout {}
-  interface PageTabs {}
+  interface MenuTabs {}
+  interface ScreenAbout {}
 }
 
 declare global {
@@ -23,33 +23,33 @@ declare global {
     new (): HTMLAppRootElement;
   };
 
-  interface HTMLPageAboutElement extends Components.PageAbout, HTMLStencilElement {}
-  var HTMLPageAboutElement: {
-    prototype: HTMLPageAboutElement;
-    new (): HTMLPageAboutElement;
+  interface HTMLMenuTabsElement extends Components.MenuTabs, HTMLStencilElement {}
+  var HTMLMenuTabsElement: {
+    prototype: HTMLMenuTabsElement;
+    new (): HTMLMenuTabsElement;
   };
 
-  interface HTMLPageTabsElement extends Components.PageTabs, HTMLStencilElement {}
-  var HTMLPageTabsElement: {
-    prototype: HTMLPageTabsElement;
-    new (): HTMLPageTabsElement;
+  interface HTMLScreenAboutElement extends Components.ScreenAbout, HTMLStencilElement {}
+  var HTMLScreenAboutElement: {
+    prototype: HTMLScreenAboutElement;
+    new (): HTMLScreenAboutElement;
   };
   interface HTMLElementTagNameMap {
     'app-root': HTMLAppRootElement;
-    'page-about': HTMLPageAboutElement;
-    'page-tabs': HTMLPageTabsElement;
+    'menu-tabs': HTMLMenuTabsElement;
+    'screen-about': HTMLScreenAboutElement;
   }
 }
 
 declare namespace LocalJSX {
   interface AppRoot extends JSXBase.HTMLAttributes<HTMLAppRootElement> {}
-  interface PageAbout extends JSXBase.HTMLAttributes<HTMLPageAboutElement> {}
-  interface PageTabs extends JSXBase.HTMLAttributes<HTMLPageTabsElement> {}
+  interface MenuTabs extends JSXBase.HTMLAttributes<HTMLMenuTabsElement> {}
+  interface ScreenAbout extends JSXBase.HTMLAttributes<HTMLScreenAboutElement> {}
 
   interface IntrinsicElements {
     'app-root': AppRoot;
-    'page-about': PageAbout;
-    'page-tabs': PageTabs;
+    'menu-tabs': MenuTabs;
+    'screen-about': ScreenAbout;
   }
 }
 
