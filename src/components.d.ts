@@ -9,19 +9,13 @@ import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 
 
 export namespace Components {
-  interface AppProfile {}
   interface AppRoot {}
-  interface ScreenNews {}
+  interface PageAbout {}
+  interface PageTabs {}
 }
 
 declare global {
 
-
-  interface HTMLAppProfileElement extends Components.AppProfile, HTMLStencilElement {}
-  var HTMLAppProfileElement: {
-    prototype: HTMLAppProfileElement;
-    new (): HTMLAppProfileElement;
-  };
 
   interface HTMLAppRootElement extends Components.AppRoot, HTMLStencilElement {}
   var HTMLAppRootElement: {
@@ -29,27 +23,33 @@ declare global {
     new (): HTMLAppRootElement;
   };
 
-  interface HTMLScreenNewsElement extends Components.ScreenNews, HTMLStencilElement {}
-  var HTMLScreenNewsElement: {
-    prototype: HTMLScreenNewsElement;
-    new (): HTMLScreenNewsElement;
+  interface HTMLPageAboutElement extends Components.PageAbout, HTMLStencilElement {}
+  var HTMLPageAboutElement: {
+    prototype: HTMLPageAboutElement;
+    new (): HTMLPageAboutElement;
+  };
+
+  interface HTMLPageTabsElement extends Components.PageTabs, HTMLStencilElement {}
+  var HTMLPageTabsElement: {
+    prototype: HTMLPageTabsElement;
+    new (): HTMLPageTabsElement;
   };
   interface HTMLElementTagNameMap {
-    'app-profile': HTMLAppProfileElement;
     'app-root': HTMLAppRootElement;
-    'screen-news': HTMLScreenNewsElement;
+    'page-about': HTMLPageAboutElement;
+    'page-tabs': HTMLPageTabsElement;
   }
 }
 
 declare namespace LocalJSX {
-  interface AppProfile {}
-  interface AppRoot {}
-  interface ScreenNews {}
+  interface AppRoot extends JSXBase.HTMLAttributes<HTMLAppRootElement> {}
+  interface PageAbout extends JSXBase.HTMLAttributes<HTMLPageAboutElement> {}
+  interface PageTabs extends JSXBase.HTMLAttributes<HTMLPageTabsElement> {}
 
   interface IntrinsicElements {
-    'app-profile': AppProfile;
     'app-root': AppRoot;
-    'screen-news': ScreenNews;
+    'page-about': PageAbout;
+    'page-tabs': PageTabs;
   }
 }
 
@@ -58,11 +58,7 @@ export { LocalJSX as JSX };
 
 declare module "@stencil/core" {
   export namespace JSX {
-    interface IntrinsicElements {
-      'app-profile': LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
-      'app-root': LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
-      'screen-news': LocalJSX.ScreenNews & JSXBase.HTMLAttributes<HTMLScreenNewsElement>;
-    }
+    interface IntrinsicElements extends LocalJSX.IntrinsicElements {}
   }
 }
 

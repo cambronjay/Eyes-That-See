@@ -11,7 +11,7 @@ const { SplashScreen } = Plugins;
   styleUrl: 'app-root.css'
 })
 export class AppRoot {
-  @State() loggedIn = false;
+  @State() loggedIn = true;
   hasSeenTutorial = true;
 
   @Element() el: HTMLElement;
@@ -20,8 +20,8 @@ export class AppRoot {
 
   appPages = [
     {
-      title: 'News',
-      url: '/news',
+      title: 'Schedule',
+      url: '/schedule',
       icon: 'calendar'
     },
     {
@@ -42,9 +42,9 @@ export class AppRoot {
   ];
 
   async componentWillLoad() {
-    // this.hasSeenTutorial = this.isServer
-    //   ? true
-    //   : await UserData.checkHasSeenTutorial();
+    this.hasSeenTutorial = this.isServer
+      ? true
+      : true;
   }
 
   async componentDidLoad() {
@@ -57,13 +57,13 @@ export class AppRoot {
   }
 
   async checkLoginStatus() {
-    //  const loggedIn = this.loggedIn = await UserData.isLoggedIn();
-    // return loggedIn;
     return true;
+    // const loggedIn = this.loggedIn = await UserData.isLoggedIn();
+    // return loggedIn;
   }
 
   async logout() {
-    //await UserData.logout();
+    // await UserData.logout();
     this.loggedIn = false;
   }
 
@@ -76,12 +76,12 @@ export class AppRoot {
   renderRouter() {
     return (
       <ion-router useHash={false}>
-        <ion-route-redirect from="/" to={this.hasSeenTutorial ? '/news' : '/tutorial'} />
+        <ion-route-redirect from="/" to={this.hasSeenTutorial ? '/about' : '/tutorial'} />
 
         <ion-route component="page-tabs">
-          <ion-route url="/news" component="tab-news">
-            <ion-route component="screen-news"></ion-route>
-            <ion-route url="/session/:sessionId" component="page-session" componentProps={{ goback: '/news' }}></ion-route>
+          <ion-route url="/schedule" component="tab-schedule">
+            <ion-route component="page-schedule"></ion-route>
+            <ion-route url="/session/:sessionId" component="page-session" componentProps={{ goback: '/schedule' }}></ion-route>
           </ion-route>
 
           <ion-route url="/speakers" component="tab-speaker">
@@ -100,7 +100,6 @@ export class AppRoot {
         <ion-route url="/account" component="page-account"></ion-route>
         <ion-route url="/signup" component="page-signup"></ion-route>
         <ion-route url="/support" component="page-support"></ion-route>
-        <ion-route url="/home" component="screen-home"></ion-route>
       </ion-router>
     );
   }
@@ -188,4 +187,3 @@ export class AppRoot {
     );
   }
 }
-
