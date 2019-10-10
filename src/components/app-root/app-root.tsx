@@ -1,7 +1,5 @@
 import '@ionic/core';
-
-import { Component, Element, Listen, Prop, State, h } from '@stencil/core';
-//import { UserData } from '../../providers/user-data';
+import { Component, Element, State, h } from '@stencil/core';
 import { Plugins } from '@capacitor/core';
 
 const { SplashScreen } = Plugins;
@@ -15,8 +13,6 @@ export class AppRoot {
   hasSeenTutorial = true;
 
   @Element() el: HTMLElement;
-
-  @Prop({ context: 'isServer' }) isServer: boolean;
 
   appPages = [
     {
@@ -42,9 +38,7 @@ export class AppRoot {
   ];
 
   async componentWillLoad() {
-    this.hasSeenTutorial = this.isServer
-      ? true
-      : true;
+
   }
 
   async componentDidLoad() {
@@ -62,21 +56,10 @@ export class AppRoot {
     // return loggedIn;
   }
 
-  async logout() {
-    // await UserData.logout();
-    this.loggedIn = false;
-  }
-
-  @Listen('userDidLogIn')
-  @Listen('userDidLogOut')
-  updateLoggedInStatus(loggedEvent) {
-    this.loggedIn = loggedEvent.detail.loginStatus;
-  }
-
   renderRouter() {
     return (
       <ion-router useHash={false}>
-        <ion-route-redirect from="/" to={this.hasSeenTutorial ? '/about' : '/tutorial'} />
+        <ion-route-redirect from="/" to='/about' />
 
         <ion-route component="menu-tabs">
           <ion-route url="/news" component="tab-news"></ion-route>
@@ -89,12 +72,11 @@ export class AppRoot {
     );
   }
 
-  // TODO ion-menu should be split out
   render() {
     return (
       <ion-app>
         {this.renderRouter()}
-        <ion-split-pane content-id="menu-content">
+        <ion-split-pane content-id="menu-content" when="md">
           <ion-menu content-id="menu-content">
             <ion-header>
               <ion-toolbar>

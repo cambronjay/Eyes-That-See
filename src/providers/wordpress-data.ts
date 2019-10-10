@@ -9,7 +9,7 @@ class WordPressDataController {
 
     }
 
-    async getAboutData(){
+    async getAboutData() {
 
     }
 }

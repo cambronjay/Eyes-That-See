@@ -12,6 +12,7 @@ export namespace Components {
   interface AppRoot {}
   interface MenuTabs {}
   interface ScreenAbout {}
+  interface ScreenNews {}
 }
 
 declare global {
@@ -34,10 +35,17 @@ declare global {
     prototype: HTMLScreenAboutElement;
     new (): HTMLScreenAboutElement;
   };
+
+  interface HTMLScreenNewsElement extends Components.ScreenNews, HTMLStencilElement {}
+  var HTMLScreenNewsElement: {
+    prototype: HTMLScreenNewsElement;
+    new (): HTMLScreenNewsElement;
+  };
   interface HTMLElementTagNameMap {
     'app-root': HTMLAppRootElement;
     'menu-tabs': HTMLMenuTabsElement;
     'screen-about': HTMLScreenAboutElement;
+    'screen-news': HTMLScreenNewsElement;
   }
 }
 
@@ -45,11 +53,13 @@ declare namespace LocalJSX {
   interface AppRoot extends JSXBase.HTMLAttributes<HTMLAppRootElement> {}
   interface MenuTabs extends JSXBase.HTMLAttributes<HTMLMenuTabsElement> {}
   interface ScreenAbout extends JSXBase.HTMLAttributes<HTMLScreenAboutElement> {}
+  interface ScreenNews extends JSXBase.HTMLAttributes<HTMLScreenNewsElement> {}
 
   interface IntrinsicElements {
     'app-root': AppRoot;
     'menu-tabs': MenuTabs;
     'screen-about': ScreenAbout;
+    'screen-news': ScreenNews;
   }
 }
 

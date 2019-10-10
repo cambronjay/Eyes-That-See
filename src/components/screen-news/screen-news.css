@@ -1,0 +1,18 @@
+ion-icon.logo {
+    font-size: 85px;
+}
+.skeleton-50 {
+    width: 50%;
+}
+.skeleton-100 {
+    width: 100%;
+}
+.skeleton-80 {
+    width: 80%;
+}
+.skeleton-70 {
+    width: 70%;
+}
+ion-thumbnail.skeleton-card-image {
+    --size: 300px;
+}
