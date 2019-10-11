@@ -7,19 +7,19 @@ import { Component, Prop, h } from '@stencil/core';
 export class MenuTabs {
 
     @Prop({ connect: 'ion-menu-controller' }) menuCtrl: HTMLIonMenuControllerElement;
-    //news is instagram/twitter
+
     async componentDidLoad() {
         const menuCtlr: HTMLIonMenuControllerElement = await (this.menuCtrl as any).componentOnReady();
         menuCtlr.enable(true);
     }
+    
     render() {
         return [
-            <ion-tabs class="hide-md">
+            <ion-tabs>
                 <ion-tab tab="tab-news" component="screen-news"></ion-tab>
                 <ion-tab tab="tab-stories" component="screen-stories"></ion-tab>
                 <ion-tab tab="tab-projects" component="screen-projects"></ion-tab>
                 <ion-tab tab="tab-about" component="screen-about"></ion-tab>
-
                 <ion-tab-bar slot="bottom">
                     <ion-tab-button tab="tab-news">
                         <ion-icon name="today"></ion-icon>

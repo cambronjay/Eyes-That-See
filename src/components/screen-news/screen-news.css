@@ -14,5 +14,10 @@ ion-icon.logo {
     width: 70%;
 }
 ion-thumbnail.skeleton-card-image {
-    --size: 300px;
+    width: 100% !important;
+    height: 300px !important;
 }
+.center-row { 
+    align-items: center !important;
+    justify-content: center !important;
+ }
