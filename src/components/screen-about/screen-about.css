@@ -1,24 +1,24 @@
-.about-header {
-  background-color: var(--ion-color-dark);
-  padding: 16px;
-  width: 100%;
-  text-align: center;
-}
-
-.about-header img {
-  max-width: 200px;
-  padding: 25px 5px 20px 0;
-}
-
-.about-info p {
-  color: var(--ion-color-medium);
-  text-align: left;
-}
-
-.about-info ion-icon {
-  color: var(--ion-color-primary);
-}
-
-.ios .about-info {
-  text-align: center;
-}
+.logo {
+  max-height: 35px;
+ }
+ .skeleton-50 {
+     width: 50%;
+ }
+ .skeleton-100 {
+     width: 100%;
+ }
+ .skeleton-80 {
+     width: 80%;
+ }
+ .skeleton-70 {
+     width: 70%;
+ }
+ ion-thumbnail.skeleton-card-image {
+     width: 100% !important;
+     height: 300px !important;
+ }
+ .center-row { 
+     align-items: center !important;
+     justify-content: center !important;
+  }
+ 

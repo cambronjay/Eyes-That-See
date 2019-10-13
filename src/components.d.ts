@@ -13,6 +13,8 @@ export namespace Components {
   interface MenuTabs {}
   interface ScreenAbout {}
   interface ScreenNews {}
+  interface ScreenProjects {}
+  interface ScreenStories {}
 }
 
 declare global {
@@ -41,11 +43,25 @@ declare global {
     prototype: HTMLScreenNewsElement;
     new (): HTMLScreenNewsElement;
   };
+
+  interface HTMLScreenProjectsElement extends Components.ScreenProjects, HTMLStencilElement {}
+  var HTMLScreenProjectsElement: {
+    prototype: HTMLScreenProjectsElement;
+    new (): HTMLScreenProjectsElement;
+  };
+
+  interface HTMLScreenStoriesElement extends Components.ScreenStories, HTMLStencilElement {}
+  var HTMLScreenStoriesElement: {
+    prototype: HTMLScreenStoriesElement;
+    new (): HTMLScreenStoriesElement;
+  };
   interface HTMLElementTagNameMap {
     'app-root': HTMLAppRootElement;
     'menu-tabs': HTMLMenuTabsElement;
     'screen-about': HTMLScreenAboutElement;
     'screen-news': HTMLScreenNewsElement;
+    'screen-projects': HTMLScreenProjectsElement;
+    'screen-stories': HTMLScreenStoriesElement;
   }
 }
 
@@ -54,12 +70,16 @@ declare namespace LocalJSX {
   interface MenuTabs extends JSXBase.HTMLAttributes<HTMLMenuTabsElement> {}
   interface ScreenAbout extends JSXBase.HTMLAttributes<HTMLScreenAboutElement> {}
   interface ScreenNews extends JSXBase.HTMLAttributes<HTMLScreenNewsElement> {}
+  interface ScreenProjects extends JSXBase.HTMLAttributes<HTMLScreenProjectsElement> {}
+  interface ScreenStories extends JSXBase.HTMLAttributes<HTMLScreenStoriesElement> {}
 
   interface IntrinsicElements {
     'app-root': AppRoot;
     'menu-tabs': MenuTabs;
     'screen-about': ScreenAbout;
     'screen-news': ScreenNews;
+    'screen-projects': ScreenProjects;
+    'screen-stories': ScreenStories;
   }
 }
 

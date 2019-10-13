@@ -5,66 +5,55 @@ import { Component, h } from '@stencil/core';
   styleUrl: 'screen-about.css',
 })
 export class ScreenAbout {
-
-  //@Prop({ connect: 'ion-popover-controller' }) popoverCtrl: HTMLIonPopoverControllerElement;
-
-  // async presentPopover(event: any) {
-  //   const popover = await this.popoverCtrl.create({
-  //     component: 'page-about-popover',
-  //     event
-  //   });
-  //   popover.present();
-  // }
-
+  skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
   render() {
     return [
       <ion-header>
         <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-menu-button></ion-menu-button>
-          </ion-buttons>
-          <ion-title>About</ion-title>
-          <ion-buttons slot="end">
-            <ion-button>
-              <ion-icon slot="icon-only" name="more"></ion-icon>
-            </ion-button>
-          </ion-buttons>
+          <ion-title>
+            <img class="logo" src="/assets/logo/logo.svg"></img>
+          </ion-title>
         </ion-toolbar>
       </ion-header>,
 
       <ion-content>
-        <div class="about-header">
-          <img src="/assets/img/ionic-logo-white.svg" alt="ionic logo" />
-        </div>
-        <div class="ion-padding about-info">
-          <h4>Ionic Conference</h4>
+        <ion-grid>
+          <ion-row justify-content-center align-items-center class="center-row">
+            <ion-col sizeMd="11" sizeLg="10" sizeXl="8">
+              <div id="skeleton">
+                <ion-list>
+                  {this.skeleton.map(() => (
+                    <ion-card>
+                      <ion-item lines="none">
+                        <ion-avatar slot="start">
+                          <ion-skeleton-text animated></ion-skeleton-text>
+                        </ion-avatar>
+                        <ion-label>
+                          <h3>
+                            <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
+                          </h3>
+                        </ion-label>
+                      </ion-item>
+                      <ion-card-content>
+                        <ion-thumbnail class="skeleton-card-image" slot="start">
+                          <ion-skeleton-text animated></ion-skeleton-text>
+                        </ion-thumbnail>
+                        <ion-item lines="none" text-left>
+                          <ion-label>
+                            <ion-skeleton-text animated class="skeleton-100"></ion-skeleton-text>
+                            <ion-skeleton-text animated class="skeleton-70"></ion-skeleton-text>
+                            <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
+                          </ion-label>
+                        </ion-item>
+                      </ion-card-content>
+                    </ion-card>
+                  ))}
 
-          <ion-list no-lines>
-            <ion-item>
-              <ion-icon name="calendar" slot="start"></ion-icon>
-              <ion-label>Date</ion-label>
-              <ion-datetime displayFormat="MMM DD, YYYY" max="2056" value="2047-05-17"></ion-datetime>
-            </ion-item>
-
-            <ion-item>
-              <ion-icon name="pin" slot="start"></ion-icon>
-              <ion-label>Location</ion-label>
-              <ion-select>
-                <ion-select-option value="madison" selected>Madison, WI</ion-select-option>
-                <ion-select-option value="austin">Austin, TX</ion-select-option>
-                <ion-select-option value="chicago">Chicago, IL</ion-select-option>
-                <ion-select-option value="seattle">Seattle, WA</ion-select-option>
-              </ion-select>
-            </ion-item>
-          </ion-list>
-
-          <p>
-            The Ionic Conference is a one-day conference featuring talks from the Ionic team. It is focused on Ionic applications being
-            built with Ionic 2. This includes migrating apps from Ionic 1 to Ionic 2, Angular concepts, Webpack, Sass, and many
-            other technologies used in Ionic 2. Tickets are completely sold out, and we’re expecting more than 1000 developers
-            – making this the largest Ionic conference ever!
-          </p>
-        </div>
+                </ion-list>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-content>
     ];
   }
