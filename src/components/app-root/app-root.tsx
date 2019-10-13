@@ -1,7 +1,7 @@
 import '@ionic/core';
 import { Component, Element, State, h } from '@stencil/core';
 import { Plugins } from '@capacitor/core';
-
+import { isPlatform } from '@ionic/core';
 const { SplashScreen } = Plugins;
 
 @Component({
@@ -11,7 +11,7 @@ const { SplashScreen } = Plugins;
 export class AppRoot {
   @State() loggedIn = true;
   hasSeenTutorial = true;
-
+  @State() isLargeScreen = false;
   @Element() el: HTMLElement;
 
   appPages = [
@@ -38,7 +38,7 @@ export class AppRoot {
   ];
 
   async componentWillLoad() {
-
+    this.isLargeScreen = isPlatform(window, "ipad") || isPlatform(window, "tablet") || isPlatform(window, "desktop") ? true : false;
   }
 
   async componentDidLoad() {
@@ -57,19 +57,29 @@ export class AppRoot {
   }
 
   renderRouter() {
-    return (
-      <ion-router useHash={false}>
-        <ion-route-redirect from="/" to='/about' />
-
-        <ion-route component="menu-tabs">
-          <ion-route url="/news" component="tab-news"></ion-route>
-          <ion-route url="/stories" component="tab-stories"></ion-route>
-          <ion-route url="/projects" component="tab-projects"></ion-route>
-          <ion-route url="/about" component="tab-about"></ion-route>
-        </ion-route>
-
-      </ion-router>
-    );
+    if (!this.isLargeScreen) {
+      return (
+        <ion-router useHash={false}>
+          <ion-route-redirect from="/" to='/news' />
+          <ion-route component="menu-tabs">
+            <ion-route url="/news" component="tab-news"></ion-route>
+            <ion-route url="/stories" component="tab-stories"></ion-route>
+            <ion-route url="/projects" component="tab-projects"></ion-route>
+            <ion-route url="/about" component="tab-about"></ion-route>
+          </ion-route>
+        </ion-router>
+      )
+    } else {
+      return (
+        <ion-router useHash={false}>
+          <ion-route-redirect from="/" to='/news' />
+            <ion-route url="/news" component="screen-news"></ion-route>
+            <ion-route url="/stories" component="screen-stories"></ion-route>
+            <ion-route url="/projects" component="screen-projects"></ion-route>
+            <ion-route url="/about" component="screen-about"></ion-route>
+        </ion-router>
+      )
+    }
   }
 
   render() {
