@@ -1,11 +1,23 @@
-import { Component, h } from '@stencil/core';
+import { Component, h, State } from '@stencil/core';
+import { SocialData } from "../../providers/social-data";
 
 @Component({
     tag: 'screen-news',
     styleUrl: 'screen-news.css',
 })
 export class ScreenNews {
-    skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    @State() tweets = [];
+    public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+
+
+
+    componentDidLoad() {
+        SocialData.myData.subscribe(data => {
+            this.tweets = data;
+          console.log("Received data: ", data);
+        });
+      }
+
     render() {
         return [
             <ion-header>
@@ -17,6 +29,9 @@ export class ScreenNews {
             </ion-header>,
 
             <ion-content>
+                <ion-refresher slot="fixed" id="refresher">
+                    <ion-refresher-content></ion-refresher-content>
+                </ion-refresher>
                 <ion-grid>
                     <ion-row justify-content-center align-items-center class="center-row">
                         <ion-col sizeMd="11" sizeLg="10" sizeXl="8">

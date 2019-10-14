@@ -21,6 +21,7 @@
         "@capacitor/core": "1.1.1",
         "@capacitor/ios": "1.1.1",
         "@ionic/core": "4.7.1",
+        "capacitor-data-storage-sqlite": "1.2.1-9",
         "rxjs": "6.5.2"
     },
     "devDependencies": {
