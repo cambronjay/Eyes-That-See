@@ -20,7 +20,7 @@ export class ScreenNews {
         //   SocialData.getSocialData();
         this.socialDataSubscription = this.socialDataObservable.subscribe(data => {
             this.tweets = data;
-            console.log(data)
+            // console.log(data)
         });
     }
 
