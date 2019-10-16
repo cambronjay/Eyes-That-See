@@ -3,14 +3,14 @@ import { set, get } from "./storage";
 import { Utils } from "./utils";
 
 class SocialDataController {
-  public socialData: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+  public twitterTimeline: BehaviorSubject<any> = new BehaviorSubject<any>([]);
 
   constructor() {
-    this.getSocialData();
+    this.getTwitterTimeline();
   }
 
-  async getSocialData(): Promise<any> {
-    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/readTimeline";
+  async getTwitterTimeline(): Promise<any> {
+    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTimeline";
     try {
       let response = await Utils.fetch(url, {
         method: 'GET'
@@ -20,18 +20,44 @@ class SocialDataController {
       } else {
         let json = await response.json();
         console.log(json);
-        this.socialData.next(json);
+        this.twitterTimeline.next(json);
         await set("ScreenNews", json);
       }
     }
     catch (err) {
       let storedData = await get("ScreenNews");
-      console.log(storedData);
       if (storedData != null) {
-        this.socialData.next(storedData);
+        this.twitterTimeline.next(storedData);
       } else {
-        this.socialData.next(null);
+        this.twitterTimeline.next(null);
       }
+    }
+  }
+
+  async getTweet(id:string): Promise<any> {
+    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTweet?id=" + id;
+    try {
+      let response = await Utils.fetch(url, {
+        method: 'GET'
+      });
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      } else {
+        let json = await response.json();
+        console.log(json);
+        return json;
+        //this.twitterTimeline.next(json);
+        //await set("ScreenNews", json);
+      }
+    }
+    catch (err) {
+      console.log(err)
+      //let storedData = await get("ScreenNews");
+     // if (storedData != null) {
+     //   this.twitterTimeline.next(storedData);
+     // } else {
+      //  this.twitterTimeline.next(null);
+      //}
     }
   }
 

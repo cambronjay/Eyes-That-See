@@ -9,27 +9,54 @@ import { Observable, Subscription } from "rxjs";
 export class ScreenNews {
     @State() tweets: any;
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-    private socialDataObservable: Observable<any>;
-    private socialDataSubscription: Subscription;
+    private twitterTimelineObservable: Observable<any>;
+    private twitterTimelineSubscription: Subscription;
 
     constructor() {
-        this.socialDataObservable = SocialData.socialData;
+        this.twitterTimelineObservable = SocialData.twitterTimeline;
     }
 
     componentDidLoad() {
         //   SocialData.getSocialData();
-        this.socialDataSubscription = this.socialDataObservable.subscribe(data => {
+        this.twitterTimelineSubscription = this.twitterTimelineObservable.subscribe(data => {
             this.tweets = data;
             // console.log(data)
         });
     }
 
     componentDidUnload() {
-        this.socialDataSubscription.unsubscribe();
+        this.twitterTimelineSubscription.unsubscribe();
     }
     componentWillRender() {
         //  SocialData.getSocialData();
     }
+
+    // async renderQuotedTweet(tweet) {
+    //     if(tweet.is_quote_status){
+    //             let tweetData = await SocialData.getTweet(tweet.quoted_status.id_str);
+    //             return (
+    //                 <ion-item lines="none">
+    //                     {{tweetData.}}
+    //                 </ion-item>
+    //             )
+            
+    //     }
+    // }
+
+    renderMedia(tweet) {
+        if(tweet.entities.media){
+            if(tweet.extended_entities.media.length > 0){
+                return (
+                    <div>
+                    {tweet.extended_entities.media.map((media) => (
+                        <img src={media.media_url_https}></img>
+                    ))}
+                    </div>
+                )
+            }
+        }
+    }
+
     renderData() {
         if (this.tweets != null) {
             if (this.tweets.length > 0) {
@@ -55,15 +82,10 @@ export class ScreenNews {
                                         }
                                     </ion-label>
                                 </ion-item>
+                                {this.renderMedia(tweet)}
+                          
                                 <ion-card-content>
-                                    <ion-thumbnail class="skeleton-card-image" slot="start">
-                                        <ion-skeleton-text animated></ion-skeleton-text>
-                                    </ion-thumbnail>
-                                    <ion-item lines="none" text-left>
-                                        <ion-label>
-                                            test
-                                    </ion-label>
-                                    </ion-item>
+                                    {tweet.full_text}                
                                 </ion-card-content>
                             </ion-card>
                         ))}
