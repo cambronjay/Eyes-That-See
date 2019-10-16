@@ -10,22 +10,16 @@ class SocialDataController {
   }
 
   async getSocialData(): Promise<any> {
-    //const url = " https://cors-anywhere.herokuapp.com/https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=eyes_that_see&count=7";
-    const url = "http://localhost:8000";
-    const header = 'Bearer ' + 'AAAAAAAAAAAAAAAAAAAAAOsMigAAAAAAs2WY%2Fp5vMYYTmWGBMzfinSuZJ%2F0%3D228BJNTz6msiNfJzk75ZmiaeepUpudoarYWpL3B0E5iQeHpYyA';
+    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/readTimeline";
     try {
       let response = await Utils.fetch(url, {
-        method: 'GET',
-        credentials: 'include',
-        mode: 'no-cors',
-        headers: {
-          'Authorization': header,
-        }
+        method: 'GET'
       });
       if (!response.ok) {
         throw new Error(response.statusText);
       } else {
         let json = await response.json();
+        console.log(json);
         this.socialData.next(json);
         await set("ScreenNews", json);
       }
