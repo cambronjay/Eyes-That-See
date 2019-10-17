@@ -1,6 +1,8 @@
 import { Component, h, State } from '@stencil/core';
 import { SocialData } from "../../providers/social-data";
 import { Observable, Subscription } from "rxjs";
+import Plyr from 'plyr';
+
 
 @Component({
     tag: 'screen-news',
@@ -11,7 +13,7 @@ export class ScreenNews {
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private twitterTimelineObservable: Observable<any>;
     private twitterTimelineSubscription: Subscription;
-
+    public player = new Plyr('video', {captions: {active: false}});
     constructor() {
         this.twitterTimelineObservable = SocialData.twitterTimeline;
     }
@@ -39,19 +41,39 @@ export class ScreenNews {
     //                     {{tweetData.}}
     //                 </ion-item>
     //             )
-            
+    //https://blog.bitsrc.io/5-open-source-html5-video-players-for-2018-38fa85932afb
+    //https://github.com/CookieCookson/stencil-video-player
+    /* <div style={{
+                                                'max-height': '200px', 
+                                                'height':'100%',
+                                                'background-image': media.media_url_https
+                                                }}>
+                                                
+                                              </div> */
+                                            //  https://github.com/unicodeveloper/cloudinary-stencil/blob/master/src/components/cloudinary-video/cloudinary-video.tsx
+                                            //https://ionicframework.com/blog/make-a-video-web-component-the-stencil-way/
     //     }
     // }
 
     renderMedia(tweet) {
-        if(tweet.entities.media){
-            if(tweet.extended_entities.media.length > 0){
+        if (tweet.entities.media) {
+            if (tweet.extended_entities.media.length > 0) {
                 return (
-                    <div>
-                    {tweet.extended_entities.media.map((media) => (
-                        <img src={media.media_url_https}></img>
-                    ))}
-                    </div>
+                    <ion-grid class="ion-no-padding">
+                        <ion-row class="ion-no-padding">
+                            {tweet.extended_entities.media.map((media) => (
+                                <ion-col class="ion-no-padding">
+                                    {media.type === "video"
+                                        ? <video id="player" width="320" height="240" controls>
+                                        <source src={media.video_info.variants[0].url} type="video/mp4"></source>
+                                      
+                                      </video>
+                                        : <ion-img src={media.media_url_https}></ion-img>
+                                    }
+                                </ion-col>
+                            ))}
+                        </ion-row>
+                    </ion-grid>
                 )
             }
         }
@@ -64,11 +86,12 @@ export class ScreenNews {
                     <ion-list>
                         {this.tweets.map((tweet) => (
                             <ion-card>
+                                {this.renderMedia(tweet)}
                                 <ion-item lines="none">
                                     <ion-avatar slot="start">
                                         {tweet.retweeted_status
-                                            ? <img src={tweet.retweeted_status.user.profile_image_url_https}></img>
-                                            : <img src={tweet.user.profile_image_url_https}></img>
+                                            ? <ion-img src={tweet.retweeted_status.user.profile_image_url_https}></ion-img>
+                                            : <ion-img src={tweet.user.profile_image_url_https}></ion-img>
                                         }
                                     </ion-avatar>
                                     <ion-label>
@@ -82,10 +105,8 @@ export class ScreenNews {
                                         }
                                     </ion-label>
                                 </ion-item>
-                                {this.renderMedia(tweet)}
-                          
                                 <ion-card-content>
-                                    {tweet.full_text}                
+                                    {tweet.full_text}
                                 </ion-card-content>
                             </ion-card>
                         ))}
