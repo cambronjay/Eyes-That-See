@@ -1,0 +1,1 @@
+import{r as o}from"./p-dfcc0234.js";import{c as r,d as n,g as s}from"./p-a24fb1dc.js";class t{constructor(r){o(this,r)}create(o){return r("ion-loading",o)}dismiss(o,r,s){return n(document,o,r,"ion-loading",s)}async getTop(){return s(document,"ion-loading")}}export{t as ion_loading_controller};

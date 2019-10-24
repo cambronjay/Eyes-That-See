@@ -1,0 +1,1 @@
+import{r as s,c as o}from"./p-dfcc0234.js";class t{constructor(o){s(this,o)}pop(){const s=this.el.closest("ion-nav");s&&s.pop({skipIfBusy:!0})}get el(){return o(this)}}export{t as ion_nav_pop};
