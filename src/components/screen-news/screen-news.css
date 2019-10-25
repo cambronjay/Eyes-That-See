@@ -27,7 +27,7 @@
 
 ion-thumbnail.skeleton-card-image {
     width: 100% !important;
-    height: 300px !important;
+    height: 40vh !important;
 }
 .center-row { 
     align-items: center !important;

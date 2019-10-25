@@ -64,21 +64,27 @@ export class ScreenNews {
                     <ion-img src={media.media_url_https}></ion-img>
                 </ion-col>;
             } else {
-                return <ion-col size="6" class="ion-no-padding">
-                    <ion-img class="img-container" src={media.media_url_https}></ion-img>
+                return <ion-col size="6">
+                    <ion-img style={{
+                        'border-radius': '8px'
+                    }} class="img-container" src={media.media_url_https}></ion-img>
                 </ion-col>;
             }
         }
     }
 
     renderMedia(tweet) {
-        if (tweet.entities.media) {
-            if (tweet.extended_entities.media.length > 0) {
+        let tweetType = tweet;
+        if (tweet.retweeted_status) {
+            tweetType = tweet.retweeted_status;
+        }
+        if (tweetType.entities.media) {
+            if (tweetType.extended_entities.media.length > 0) {
                 return (
                     <ion-grid class="ion-no-padding">
                         <ion-row class="ion-no-padding">
-                            {tweet.extended_entities.media.map((media) => (
-                                this.renderMediaColumns(tweet.extended_entities.media, media)
+                            {tweetType.extended_entities.media.map((media) => (
+                                this.renderMediaColumns(tweetType.extended_entities.media, media)
                             ))}
                         </ion-row>
                     </ion-grid>
@@ -87,12 +93,44 @@ export class ScreenNews {
         }
     }
 
+    renderQuotedTweet(tweet) {
+        if (tweet.quoted_status) {
+            return (<ion-card style={{
+                'margin-top':'0px'
+            }}>
+                {this.renderReTweet(tweet.quoted_status)}
+                <ion-item lines="none">
+                    <ion-avatar slot="start">
+                        {tweet.quoted_status.retweeted_status
+                            ? <ion-img src={tweet.quoted_status.retweeted_status.user.profile_image_url_https}></ion-img>
+                            : <ion-img src={tweet.quoted_status.user.profile_image_url_https}></ion-img>
+                        }
+                    </ion-avatar>
+                    <ion-label>
+                        {tweet.quoted_status.retweeted_status
+                            ? <h2 innerHTML={tweet.quoted_status.retweeted_status.user.name}></h2>
+                            : <h2 innerHTML={tweet.quoted_status.user.name}></h2>
+                        }
+                        {tweet.quoted_status.retweeted_status
+                            ? <p innerHTML={'@' + tweet.quoted_status.retweeted_status.user.screen_name}></p>
+                            : <p innerHTML={'@' + tweet.quoted_status.user.screen_name}></p>
+                        }
+                    </ion-label>
+                </ion-item>
+                <ion-card-content>
+                    {this.fixTweets(tweet.quoted_status.full_text)}
+                </ion-card-content>
+                {this.renderMedia(tweet.quoted_status)}
+            </ion-card>)
+        }
+    }
+
     renderReTweet(tweet) {
         if (tweet.retweeted_status) {
             return (<ion-item lines="none">
                 <ion-icon name="sync" size="small"></ion-icon>
-                <ion-label>
-                    {<p innerHTML={tweet.user.name + 'Retweeted'}></p>}
+                <ion-label class="ion-no-padding ion-no-margin">
+                    <p innerHTML={tweet.user.name + ' Retweeted'} style={{ 'padding-left': '10px' }}></p>
                 </ion-label>
             </ion-item>)
         }
@@ -125,9 +163,13 @@ export class ScreenNews {
                                     </ion-label>
                                 </ion-item>
                                 <ion-card-content>
-                                    {this.fixTweets(tweet.full_text)}
+                                    {tweet.retweeted_status
+                                        ? this.fixTweets(tweet.retweeted_status.full_text)
+                                        : this.fixTweets(tweet.full_text)
+                                    }
                                 </ion-card-content>
                                 {this.renderMedia(tweet)}
+                                {this.renderQuotedTweet(tweet)}
                             </ion-card>
                         ))}
                     </ion-list>
@@ -144,6 +186,9 @@ export class ScreenNews {
                                     <ion-label>
                                         <h3>
                                             <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
+                                        </h3>
+                                        <h3>
+                                            <ion-skeleton-text animated class="skeleton-50"></ion-skeleton-text>
                                         </h3>
                                     </ion-label>
                                 </ion-item>
