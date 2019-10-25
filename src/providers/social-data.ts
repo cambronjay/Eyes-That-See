@@ -34,7 +34,7 @@ class SocialDataController {
     }
   }
 
-  async getTweet(id:string): Promise<any> {
+  async getTweet(id: string): Promise<any> {
     const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTweet?id=" + id;
     try {
       let response = await Utils.fetch(url, {
@@ -52,10 +52,15 @@ class SocialDataController {
     }
     catch (err) {
       console.log(err)
+      // return fetch('/some-data.json')
+      // .then(response => response.json())
+      // .then(data => {
+      //   this.content = data;
+      // });
       //let storedData = await get("ScreenNews");
-     // if (storedData != null) {
-     //   this.twitterTimeline.next(storedData);
-     // } else {
+      // if (storedData != null) {
+      //   this.twitterTimeline.next(storedData);
+      // } else {
       //  this.twitterTimeline.next(null);
       //}
     }

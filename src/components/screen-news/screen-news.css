@@ -16,8 +16,13 @@
 
 .img-container {
     overflow: hidden !important;
-    height: fit-content;
+    height: 25vh;
+    object-fit: cover;
+}
 
+.video-player {
+    width: 100% !important;
+    height: 50vh !important;
 }
 
 ion-thumbnail.skeleton-card-image {

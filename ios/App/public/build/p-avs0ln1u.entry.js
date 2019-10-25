@@ -1,1 +1,0 @@
-import{r as o}from"./p-dfcc0234.js";import{c as r,d as s,g as t}from"./p-a24fb1dc.js";class a{constructor(r){o(this,r)}create(o){return r("ion-modal",o)}dismiss(o,r,t){return s(document,o,r,"ion-modal",t)}async getTop(){return t(document,"ion-modal")}}export{a as ion_modal_controller};

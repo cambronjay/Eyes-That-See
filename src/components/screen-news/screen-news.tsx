@@ -1,7 +1,7 @@
 import { Component, h, State } from '@stencil/core';
 import { SocialData } from "../../providers/social-data";
 import { Observable, Subscription } from "rxjs";
-import Plyr from 'plyr';
+import Plyr from "plyr";
 
 
 @Component({
@@ -13,9 +13,15 @@ export class ScreenNews {
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private twitterTimelineObservable: Observable<any>;
     private twitterTimelineSubscription: Subscription;
-    public player = new Plyr('video', { captions: { active: false } });
+    public players;
+
     constructor() {
         this.twitterTimelineObservable = SocialData.twitterTimeline;
+
+    }
+
+    componentWillLoad() {
+
     }
 
     componentDidLoad() {
@@ -24,103 +30,37 @@ export class ScreenNews {
             this.tweets = data;
             // console.log(data)
         });
+
     }
 
     componentDidUnload() {
         this.twitterTimelineSubscription.unsubscribe();
     }
     componentWillRender() {
+
         //  SocialData.getSocialData();
     }
 
-    // private getImageURL(imagePath) {
-    //     return 'url(' + imagePath + ')';
-    // }
-
-    // async renderQuotedTweet(tweet) {
-    //     if(tweet.is_quote_status){
-    //             let tweetData = await SocialData.getTweet(tweet.quoted_status.id_str);
-    //             return (
-    //                 <ion-item lines="none">
-    //                     {{tweetData.}}
-    //                 </ion-item>
-    //             )
-    //<ion-img src={media.media_url_https}></ion-img>
-    //https://blog.bitsrc.io/5-open-source-html5-video-players-for-2018-38fa85932afb
-    //https://github.com/CookieCookson/stencil-video-player
-    /* <div style={{
-                                                'max-height': '200px', 
-                                                'height':'100%',
-                                                'background-image': media.media_url_https
-                                                }}>
-                                                
-                                              </div> */
-    //  https://github.com/unicodeveloper/cloudinary-stencil/blob/master/src/components/cloudinary-video/cloudinary-video.tsx
-    //https://ionicframework.com/blog/make-a-video-web-component-the-stencil-way/
-    //     }
-    // }
-
-    // private buildImageContainer(media) {
-    //     if (media.length == 1) {
-    //         return <ion-img src={media[0].media_url_https}></ion-img>
-    //     } else {
-    //         let imageArray = media.map(image => {
-    //             if (image.type != "video") {
-    //                 return <div class="img-container" style={{
-    //                     'background-image': `url(${media.media_url_https})`,
-    //                     'background-repeat': 'no-repeat',
-    //                     'bacground-size': 'contain',
-    //                     'background-position': 'center center'
-    //                 }}></div>
-    //             }
-    //         });
-    //         return imageArray;
-    //     }
-    // }
-
-    // <div class="img-container" style={{
-    //     'background-image': `url(${media.media_url_https})`,
-    //     'background-repeat': 'no-repeat',
-    //     'bacground-size': 'cover',
-    //     'background-position': 'left top'
-    // }}></div>
-
-    // {
-    //     media.type === "video"
-    //         ? <ion-col size="12" class="ion-no-padding"><video id="player" width="100%" height="100%" controls>
-    //             <source src={media.video_info.variants[0].url} type="video/mp4"></source>
-    //         </video>
-    //         </ion-col>
-    //         : tweet.extended_entities.media.length == 1 ?
-    //             <ion-col size="12" class="ion-no-padding">
-    //                 <ion-img src={media.media_url_https}></ion-img>
-    //             </ion-col>
-    //             : <ion-col size="6" class="ion-no-padding ion-col-height">
-    //                 <ion-img src={media.media_url_https}></ion-img>
-    //             </ion-col>
-    // }
+    componentDidRender() {
+        this.players = Plyr.setup('.js-player', { captions: { active: true } });
+    }
 
     renderMediaColumns(tweet, media) {
         if (media.type == "video") {
             return <ion-col size="12" class="ion-no-padding">
-                <video id="player" controls>
-                    <source src={media.video_info.variants[0].url} type="video/mp4"></source>
+                <video class='js-player video-player' controls playsinline poster={media.media_url_https}>
+                    <source src={media.video_info.variants[2].url} type="video/mp4"></source>
                 </video>
             </ion-col>;
         } else {
             if (tweet.length == 1) {
                 return <ion-col size="12" class="ion-no-padding">
                     <ion-img src={media.media_url_https}></ion-img>
-                </ion-col>
+                </ion-col>;
             } else {
                 return <ion-col size="6" class="ion-no-padding">
-                    <div class="img-container" style={{
-                        'background-image': `url(${media.media_url_https})`,
-                        'background-repeat': 'no-repeat',
-                        'bacground-size': 'cover',
-                        'background-position': 'left top'
-                    }}></div>
-                </ion-col>
+                    <ion-img class="img-container" src={media.media_url_https}></ion-img>
+                </ion-col>;
             }
         }
     }
@@ -129,7 +69,7 @@ export class ScreenNews {
         if (tweet.entities.media) {
             if (tweet.extended_entities.media.length > 0) {
                 return (
-                    <ion-grid class="ion-no-padding fix-grid">
+                    <ion-grid class="ion-no-padding">
                         <ion-row class="ion-no-padding">
                             {tweet.extended_entities.media.map((media) => (
                                 this.renderMediaColumns(tweet.extended_entities.media, media)

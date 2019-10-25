@@ -31,5 +31,5 @@
   * Include the local variable file to style Ionic components
   * with CSS variables and custom themes.
   */
- 
+ @import "~plyr/dist/plyr.css";
  @import "../theme/variables.css";
