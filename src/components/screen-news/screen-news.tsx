@@ -3,7 +3,6 @@ import { SocialData } from "../../providers/social-data";
 import { Observable, Subscription } from "rxjs";
 import Plyr from "plyr";
 
-
 @Component({
     tag: 'screen-news',
     styleUrl: 'screen-news.css',
@@ -42,7 +41,14 @@ export class ScreenNews {
     }
 
     componentDidRender() {
-        this.players = Plyr.setup('.js-player', { captions: { active: true } });
+        this.players = Plyr.setup('.js-player', { captions: { active: false } });
+    }
+
+    private fixTweets(string) {
+        var value = string;
+        var newString = value.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+        var newStringTwo = newString.replace(/RT/g, '');
+        return newStringTwo;
     }
 
     renderMediaColumns(tweet, media) {
@@ -88,7 +94,7 @@ export class ScreenNews {
                     <ion-list>
                         {this.tweets.map((tweet) => (
                             <ion-card>
-                                {this.renderMedia(tweet)}
+
                                 <ion-item lines="none">
                                     <ion-avatar slot="start">
                                         {tweet.retweeted_status
@@ -108,8 +114,9 @@ export class ScreenNews {
                                     </ion-label>
                                 </ion-item>
                                 <ion-card-content>
-                                    {tweet.full_text}
+                                    {this.fixTweets(tweet.full_text)}
                                 </ion-card-content>
+                                {this.renderMedia(tweet)}
                             </ion-card>
                         ))}
                     </ion-list>
