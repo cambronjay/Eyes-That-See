@@ -87,6 +87,17 @@ export class ScreenNews {
         }
     }
 
+    renderReTweet(tweet) {
+        if (tweet.retweeted_status) {
+            return (<ion-item lines="none">
+                <ion-icon name="sync" size="small"></ion-icon>
+                <ion-label>
+                    {<p innerHTML={tweet.user.name + 'Retweeted'}></p>}
+                </ion-label>
+            </ion-item>)
+        }
+    }
+
     renderData() {
         if (this.tweets != null) {
             if (this.tweets.length > 0) {
@@ -94,7 +105,7 @@ export class ScreenNews {
                     <ion-list>
                         {this.tweets.map((tweet) => (
                             <ion-card>
-
+                                {this.renderReTweet(tweet)}
                                 <ion-item lines="none">
                                     <ion-avatar slot="start">
                                         {tweet.retweeted_status
