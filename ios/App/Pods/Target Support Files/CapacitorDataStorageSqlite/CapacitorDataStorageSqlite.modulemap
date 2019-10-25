@@ -1,6 +1,0 @@
-framework module CapacitorDataStorageSqlite {
-  umbrella header "CapacitorDataStorageSqlite-umbrella.h"
-
-  export *
-  module * { export * }
-}
