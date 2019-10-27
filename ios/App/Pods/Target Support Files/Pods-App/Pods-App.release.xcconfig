@@ -1,9 +1,9 @@
 ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Capacitor" "${PODS_CONFIGURATION_BUILD_DIR}/CapacitorCordova" "${PODS_CONFIGURATION_BUILD_DIR}/CapacitorDataStorageSqlite" "${PODS_CONFIGURATION_BUILD_DIR}/SQLite.swift"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Capacitor" "${PODS_CONFIGURATION_BUILD_DIR}/CapacitorCordova" "${PODS_CONFIGURATION_BUILD_DIR}/CapacitorVideoPlayer"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Capacitor/Capacitor.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/CapacitorCordova/Cordova.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/CapacitorDataStorageSqlite/CapacitorDataStorageSqlite.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SQLite.swift/SQLite.framework/Headers"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/Capacitor/Capacitor.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/CapacitorCordova/Cordova.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/CapacitorVideoPlayer/CapacitorVideoPlayer.framework/Headers"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
-OTHER_LDFLAGS = $(inherited) -l"sqlite3" -framework "Capacitor" -framework "CapacitorDataStorageSqlite" -framework "Cordova" -framework "SQLite" -framework "WebKit"
+OTHER_LDFLAGS = $(inherited) -framework "Capacitor" -framework "CapacitorVideoPlayer" -framework "Cordova" -framework "WebKit"
 OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

@@ -1,7 +1,10 @@
 import { Component, h, State } from '@stencil/core';
 import { SocialData } from "../../providers/social-data";
 import { Observable, Subscription } from "rxjs";
+import { Plugins } from '@capacitor/core';
+import { isPlatform } from '@ionic/core';
 import Plyr from "plyr";
+const { CapacitorVideoPlayer } = Plugins;
 
 @Component({
     tag: 'screen-news',
@@ -12,7 +15,8 @@ export class ScreenNews {
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private twitterTimelineObservable: Observable<any>;
     private twitterTimelineSubscription: Subscription;
-    public players;
+    public players: any;
+    public player: any;
 
     constructor() {
         this.twitterTimelineObservable = SocialData.twitterTimeline;
@@ -38,6 +42,7 @@ export class ScreenNews {
     componentWillRender() {
 
         //  SocialData.getSocialData();
+        // set html on load and add class <html class="md">
     }
 
     componentDidRender() {
@@ -51,12 +56,32 @@ export class ScreenNews {
         return newStringTwo;
     }
 
+    async playVideo(e, url: string) {
+        e.preventDefault();
+        let videoPlayer: any;
+        videoPlayer = CapacitorVideoPlayer;
+        this.player = await videoPlayer.play({ url: url });
+    }
+
+    renderVideo(media: any) {
+        if (isPlatform(window, "ios") || isPlatform(window, "android")) {
+            return (
+                <div style={{'position': 'relative'}}>
+                    <div class="play-button"><ion-icon name="play-circle" color="primary" class="play-button-icon"></ion-icon></div>
+                    <ion-img class="img-container" src={media.media_url_https} onClick={(e) => this.playVideo(e, media.video_info.variants[2].url)}></ion-img>
+                </div>
+            )
+        } else {
+            return (<video class='js-player video-player' controls playsinline poster={media.media_url_https}>
+                <source src={media.video_info.variants[2].url} type="video/mp4"></source>
+            </video>)
+        }
+    }
+
     renderMediaColumns(tweet, media) {
         if (media.type == "video") {
             return <ion-col size="12" class="ion-no-padding">
-                <video class='js-player video-player' controls playsinline poster={media.media_url_https}>
-                    <source src={media.video_info.variants[2].url} type="video/mp4"></source>
-                </video>
+                {this.renderVideo(media)}
             </ion-col>;
         } else {
             if (tweet.length == 1) {
@@ -96,7 +121,7 @@ export class ScreenNews {
     renderQuotedTweet(tweet) {
         if (tweet.quoted_status) {
             return (<ion-card style={{
-                'margin-top':'0px'
+                'margin-top': '0px'
             }}>
                 {this.renderReTweet(tweet.quoted_status)}
                 <ion-item lines="none">
