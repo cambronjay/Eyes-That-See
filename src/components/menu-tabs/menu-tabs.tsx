@@ -5,7 +5,6 @@ import { Component, Prop, h } from '@stencil/core';
     styleUrl: 'menu-tabs.css',
 })
 export class MenuTabs {
-
     @Prop({ connect: 'ion-menu-controller' }) menuCtrl: HTMLIonMenuControllerElement;
 
     async componentDidLoad() {

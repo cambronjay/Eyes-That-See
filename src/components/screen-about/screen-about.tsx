@@ -5,7 +5,7 @@ import { Component, h } from '@stencil/core';
   styleUrl: 'screen-about.css',
 })
 export class ScreenAbout {
-  skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+
   render() {
     return [
       <ion-header>
@@ -63,7 +63,7 @@ export class ScreenAbout {
                 <ion-card>
                   <ion-item lines="none">
                     <ion-avatar slot="start">
-                      <img src="http://www.eyesthatsee.org/wp-content/uploads/2011/09/nikki.jpg"></img>
+                      <img src="assets/img/nikki.jpg"></img>
                     </ion-avatar>
                     <ion-label>
                       <h2>
@@ -79,7 +79,7 @@ export class ScreenAbout {
                 <ion-card>
                   <ion-item lines="none">
                     <ion-avatar slot="start">
-                      <img src="http://www.eyesthatsee.org/wp-content/uploads/2011/09/IMG_2009.jpg"></img>
+                      <img src="assets/img/lauren.jpg"></img>
                     </ion-avatar>
                     <ion-label>
                       <h2>
@@ -95,7 +95,7 @@ export class ScreenAbout {
                 <ion-card>
                   <ion-item lines="none">
                     <ion-avatar slot="start">
-                      <img src="http://www.eyesthatsee.org/wp-content/uploads/2011/09/matt-e1391444167835-282x300.jpg"></img>
+                      <img src="assets/img/matt.jpg"></img>
                     </ion-avatar>
                     <ion-label>
                       <h2>
@@ -111,7 +111,7 @@ export class ScreenAbout {
                 <ion-card>
                   <ion-item lines="none">
                     <ion-avatar slot="start">
-                      <img src="http://www.eyesthatsee.org/wp-content/uploads/2014/02/cjbiopic-e1392399078391.jpg"></img>
+                      <img src="assets/img/cj.jpg"></img>
                     </ion-avatar>
                     <ion-label>
                       <h2>

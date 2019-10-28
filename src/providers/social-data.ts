@@ -34,6 +34,10 @@ class SocialDataController {
     }
   }
 
+  async refreshTimeline(): Promise<any> {
+      return await this.getTwitterTimeline();
+  }
+
   async getTweet(id: string): Promise<any> {
     const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTweet?id=" + id;
     try {

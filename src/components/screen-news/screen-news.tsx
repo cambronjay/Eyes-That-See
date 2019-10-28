@@ -17,65 +17,67 @@ export class ScreenNews {
     private twitterTimelineSubscription: Subscription;
     public players: any;
     public player: any;
-    // public content: any;
-    // private nav: any;
-    // private isNewsTab: boolean = false;
-    // private tabs: any;
+    private refresher: any;
+    private newsList: any;
+    @State() virtualScroll: any;
+    private newsContent: any;
+    private tabs: any;
     constructor() {
         this.twitterTimelineObservable = SocialData.twitterTimeline;
-        //  this.content = document.querySelector('ion-content');
-
     }
 
     componentWillLoad() {
 
     }
 
-    componentDidLoad() {
-
+    async componentDidLoad() {
+        this.virtualScroll = document.getElementById("virtualTwitterTimeline");
         //   SocialData.getSocialData();
         this.twitterTimelineSubscription = this.twitterTimelineObservable.subscribe(data => {
             this.tweets = data;
-            // console.log(data)
+            setTimeout(() => {
+                this.virtualScroll.checkEnd();
+            }, 1000);
         });
-        // let activeTabs = document.querySelector("ion-tabs");
-        // Event use
-        // activeTabs.addEventListener('ionTabsWillChange', (event:any) => {
-        //     event = event.detail;
-        // });
-        // activeTabs.addEventListener('click', (event: any) => {
-        //     event.preventDefault();
-        //     event.stopPropagation();
-        //     activeTabs.getSelected().then((data) => {
-        //         if (data == "tab-news" || data == "tab-stories") {
-
-        //             console.log('here')
-        //         }
-        //     });
-        // });
+        this.refresher = document.getElementById("refresher");
+        this.newsContent = document.getElementById("newsContent");
+        this.newsList = document.getElementById("newsList");
+        this.refresher.addEventListener("ionRefresh", () => {
+            setTimeout(() => {
+                SocialData.refreshTimeline().then(() => {
+                    this.refresher.complete();
+                })
+                    .catch(() => {
+                        this.refresher.complete();
+                    });
+            }, 2000);
+        });
+        this.tabs = document.querySelector("ion-tabs");
+        this.tabs.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            this.tabs.getSelected().then((data) => {
+                if (data == "tab-news") {
+                    this.newsContent.scrollToTop(500);
+                }
+            });
+        });
     }
 
     componentDidUnload() {
         this.twitterTimelineSubscription.unsubscribe();
     }
     componentWillRender() {
-
         //  SocialData.getSocialData();
         // set html on load and add class <html class="md">
     }
 
     componentDidRender() {
         this.players = Plyr.setup('.js-player', { captions: { active: false } });
-        //this.content = document.querySelector('ion-content');
-        //this.nav = document.querySelector('ion-nav');
-        // this.tabs = document.querySelector('ion-tabs');
-        // this.content.scrollEvents = true;
-        //        this.nav.getActive().then((data) => console.log(data));
-        //  this.tabs.getSelected().then((data) => data === 'tab-news' ? this.isNewsTab = true : this.isNewsTab = false);
-    }
-
-    public getContent() {
-        return document.querySelector('ion-content');
+        //const content = document.querySelector('ion-content');
+        //this.tabs = document.querySelector('ion-tabs');
+        //this.content.scrollEvents = true;
+        //this.tabs.getSelected().then((data) => data === 'tab-news' ? this.isNewsTab = true : this.isNewsTab = false);
     }
 
     private fixTweets(string) {
@@ -190,12 +192,45 @@ export class ScreenNews {
         }
     }
 
+    renderTweets(tweet, index) {
+        return (<ion-card>
+            {this.renderReTweet(tweet)}
+            <ion-item lines="none">
+                <ion-avatar slot="start">
+                    {tweet.retweeted_status
+                        ? <ion-img src={tweet.retweeted_status.user.profile_image_url_https}></ion-img>
+                        : <ion-img src={tweet.user.profile_image_url_https}></ion-img>
+                    }
+                </ion-avatar>
+                <ion-label>
+                    {tweet.retweeted_status
+                        ? <h2 innerHTML={tweet.retweeted_status.user.name}></h2>
+                        : <h2 innerHTML={tweet.user.name}></h2>
+                    }
+                    {tweet.retweeted_status
+                        ? <p innerHTML={'@' + tweet.retweeted_status.user.screen_name}></p>
+                        : <p innerHTML={'@' + tweet.user.screen_name}></p>
+                    }
+                </ion-label>
+            </ion-item>
+            <ion-card-content>
+                {tweet.retweeted_status
+                    ? this.fixTweets(tweet.retweeted_status.full_text)
+                    : this.fixTweets(tweet.full_text)
+                }
+            </ion-card-content>
+            {this.renderMedia(tweet)}
+            {this.renderQuotedTweet(tweet)}
+        </ion-card>)
+    }
+
     renderData() {
         if (this.tweets != null) {
             if (this.tweets.length > 0) {
                 return (
-                    <ion-list>
-                        {this.tweets.map((tweet) => (
+                    <ion-list id="newsList">
+                        <ion-virtual-scroll id="virtualTwitterTimeline" items={this.tweets} renderItem={(item, index) => this.renderTweets(item, index)}></ion-virtual-scroll>
+                        {/* {this.tweets.map((tweet) => (
                             <ion-card>
                                 {this.renderReTweet(tweet)}
                                 <ion-item lines="none">
@@ -225,7 +260,7 @@ export class ScreenNews {
                                 {this.renderMedia(tweet)}
                                 {this.renderQuotedTweet(tweet)}
                             </ion-card>
-                        ))}
+                        ))} */}
                     </ion-list>
                 )
             } else {
@@ -276,12 +311,6 @@ export class ScreenNews {
         }
     }
 
-    public scrollToTop(e) {
-        // console.log(this.getContent())
-        this.getContent().scrollToTop(500).then(() => { })
-            .catch((error) => console.log(error));
-    }
-
     render() {
         return [
             <ion-header>
@@ -292,18 +321,19 @@ export class ScreenNews {
                 </ion-toolbar>
             </ion-header>,
 
-            <ion-content>
+            <ion-content id="newsContent">
                 <ion-refresher slot="fixed" id="refresher">
-                    <ion-refresher-content></ion-refresher-content>
+                    <ion-refresher-content pulling-icon="arrow-down" refreshing-spinner="crescent">
+                    </ion-refresher-content>
                 </ion-refresher>
                 <ion-grid>
                     <ion-row justify-content-center align-items-center class="center-row">
                         <ion-col sizeMd="11" sizeLg="10" sizeXl="8">
+
                             {this.renderData()}
                         </ion-col>
                     </ion-row>
                 </ion-grid>
-                <p class="ion-padding-start ion-padding-end"><ion-button onClick={(e) => this.scrollToTop(e)} expand="block" fill="outline">Scroll To Top</ion-button></p>
             </ion-content>
         ];
     }
