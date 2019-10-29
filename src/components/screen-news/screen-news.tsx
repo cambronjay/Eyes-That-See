@@ -19,9 +19,10 @@ export class ScreenNews {
     public player: any;
     private refresher: any;
     private newsList: any;
-    @State() virtualScroll: any;
     private newsContent: any;
     private tabs: any;
+    private newsTab: any;
+    private nav: any;
     constructor() {
         this.twitterTimelineObservable = SocialData.twitterTimeline;
     }
@@ -31,13 +32,9 @@ export class ScreenNews {
     }
 
     async componentDidLoad() {
-        this.virtualScroll = document.getElementById("virtualTwitterTimeline");
         //   SocialData.getSocialData();
         this.twitterTimelineSubscription = this.twitterTimelineObservable.subscribe(data => {
             this.tweets = data;
-            setTimeout(() => {
-                this.virtualScroll.checkEnd();
-            }, 1000);
         });
         this.refresher = document.getElementById("refresher");
         this.newsContent = document.getElementById("newsContent");
@@ -52,21 +49,36 @@ export class ScreenNews {
                     });
             }, 2000);
         });
-        this.tabs = document.querySelector("ion-tabs");
-        this.tabs.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            this.tabs.getSelected().then((data) => {
-                if (data == "tab-news") {
-                    this.newsContent.scrollToTop(500);
-                }
+        if (!isPlatform(window, "ipad") && !isPlatform(window, "tablet") && !isPlatform(window, "desktop")) {
+            this.tabs = document.querySelector("ion-tabs");
+            this.newsTab = document.querySelector("#newsTab");
+            this.newsTab.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.tabs.getSelected().then((data) => {
+                    if (data == "tab-news") {
+                        this.newsContent.scrollToTop(500);
+                    }
+                });
             });
-        });
+        } else {
+            this.nav = document.querySelector("ion-nav");
+            this.newsTab = document.querySelector("#sideMenu");
+            this.newsTab.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                console.log(event);
+                this.nav.getActive().then((data) => {
+                    console.log(data)
+                    if (data == "tab-news") {
+                        this.newsContent.scrollToTop(500);
+                    }
+                });
+            });
+        }
     }
 
-    componentDidUnload() {
-        this.twitterTimelineSubscription.unsubscribe();
-    }
+
     componentWillRender() {
         //  SocialData.getSocialData();
         // set html on load and add class <html class="md">
@@ -74,10 +86,10 @@ export class ScreenNews {
 
     componentDidRender() {
         this.players = Plyr.setup('.js-player', { captions: { active: false } });
-        //const content = document.querySelector('ion-content');
-        //this.tabs = document.querySelector('ion-tabs');
-        //this.content.scrollEvents = true;
-        //this.tabs.getSelected().then((data) => data === 'tab-news' ? this.isNewsTab = true : this.isNewsTab = false);
+    }
+
+    componentDidUnload() {
+        this.twitterTimelineSubscription.unsubscribe();
     }
 
     private fixTweets(string) {
@@ -192,45 +204,12 @@ export class ScreenNews {
         }
     }
 
-    renderTweets(tweet, index) {
-        return (<ion-card>
-            {this.renderReTweet(tweet)}
-            <ion-item lines="none">
-                <ion-avatar slot="start">
-                    {tweet.retweeted_status
-                        ? <ion-img src={tweet.retweeted_status.user.profile_image_url_https}></ion-img>
-                        : <ion-img src={tweet.user.profile_image_url_https}></ion-img>
-                    }
-                </ion-avatar>
-                <ion-label>
-                    {tweet.retweeted_status
-                        ? <h2 innerHTML={tweet.retweeted_status.user.name}></h2>
-                        : <h2 innerHTML={tweet.user.name}></h2>
-                    }
-                    {tweet.retweeted_status
-                        ? <p innerHTML={'@' + tweet.retweeted_status.user.screen_name}></p>
-                        : <p innerHTML={'@' + tweet.user.screen_name}></p>
-                    }
-                </ion-label>
-            </ion-item>
-            <ion-card-content>
-                {tweet.retweeted_status
-                    ? this.fixTweets(tweet.retweeted_status.full_text)
-                    : this.fixTweets(tweet.full_text)
-                }
-            </ion-card-content>
-            {this.renderMedia(tweet)}
-            {this.renderQuotedTweet(tweet)}
-        </ion-card>)
-    }
-
     renderData() {
         if (this.tweets != null) {
             if (this.tweets.length > 0) {
                 return (
                     <ion-list id="newsList">
-                        <ion-virtual-scroll id="virtualTwitterTimeline" items={this.tweets} renderItem={(item, index) => this.renderTweets(item, index)}></ion-virtual-scroll>
-                        {/* {this.tweets.map((tweet) => (
+                        {this.tweets.map((tweet) => (
                             <ion-card>
                                 {this.renderReTweet(tweet)}
                                 <ion-item lines="none">
@@ -260,7 +239,7 @@ export class ScreenNews {
                                 {this.renderMedia(tweet)}
                                 {this.renderQuotedTweet(tweet)}
                             </ion-card>
-                        ))} */}
+                        ))}
                     </ion-list>
                 )
             } else {
@@ -329,7 +308,6 @@ export class ScreenNews {
                 <ion-grid>
                     <ion-row justify-content-center align-items-center class="center-row">
                         <ion-col sizeMd="11" sizeLg="10" sizeXl="8">
-
                             {this.renderData()}
                         </ion-col>
                     </ion-row>

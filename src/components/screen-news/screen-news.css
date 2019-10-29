@@ -1,3 +1,7 @@
+ion-virtual-scroll > .virtual-item {
+    height: auto !important;
+}
+
 .logo {
  max-height: 35px;
 }

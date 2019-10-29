@@ -97,7 +97,7 @@ export class AppRoot {
               <ion-list>
                 {this.appPages.map((p) => (
                   <ion-menu-toggle autoHide={false}>
-                    <ion-item href={p.url}>
+                    <ion-item href={p.url} id="sideMenu">
                       <ion-icon slot="start" name={p.icon}></ion-icon>
                       <ion-label>{p.title}</ion-label>
                     </ion-item>

@@ -19,8 +19,8 @@ export class MenuTabs {
                 <ion-tab tab="tab-stories" component="screen-stories"></ion-tab>
                 <ion-tab tab="tab-projects" component="screen-projects"></ion-tab>
                 <ion-tab tab="tab-about" component="screen-about"></ion-tab>
-                <ion-tab-bar slot="bottom">
-                    <ion-tab-button tab="tab-news" >
+                <ion-tab-bar slot="bottom" id="newsTab">
+                    <ion-tab-button tab="tab-news">
                         <ion-icon name="today"></ion-icon>
                         <ion-label>News</ion-label>
                     </ion-tab-button>
