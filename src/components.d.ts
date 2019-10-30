@@ -11,11 +11,11 @@ import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 
 export namespace Components {
   interface AppRoot {}
+  interface MenuNav {}
   interface MenuTabs {}
   interface ScreenAbout {}
   interface ScreenNews {}
   interface ScreenProjects {}
-  interface ScreenStories {}
 }
 
 declare global {
@@ -25,6 +25,12 @@ declare global {
   var HTMLAppRootElement: {
     prototype: HTMLAppRootElement;
     new (): HTMLAppRootElement;
+  };
+
+  interface HTMLMenuNavElement extends Components.MenuNav, HTMLStencilElement {}
+  var HTMLMenuNavElement: {
+    prototype: HTMLMenuNavElement;
+    new (): HTMLMenuNavElement;
   };
 
   interface HTMLMenuTabsElement extends Components.MenuTabs, HTMLStencilElement {}
@@ -50,37 +56,31 @@ declare global {
     prototype: HTMLScreenProjectsElement;
     new (): HTMLScreenProjectsElement;
   };
-
-  interface HTMLScreenStoriesElement extends Components.ScreenStories, HTMLStencilElement {}
-  var HTMLScreenStoriesElement: {
-    prototype: HTMLScreenStoriesElement;
-    new (): HTMLScreenStoriesElement;
-  };
   interface HTMLElementTagNameMap {
     'app-root': HTMLAppRootElement;
+    'menu-nav': HTMLMenuNavElement;
     'menu-tabs': HTMLMenuTabsElement;
     'screen-about': HTMLScreenAboutElement;
     'screen-news': HTMLScreenNewsElement;
     'screen-projects': HTMLScreenProjectsElement;
-    'screen-stories': HTMLScreenStoriesElement;
   }
 }
 
 declare namespace LocalJSX {
   interface AppRoot {}
+  interface MenuNav {}
   interface MenuTabs {}
   interface ScreenAbout {}
   interface ScreenNews {}
   interface ScreenProjects {}
-  interface ScreenStories {}
 
   interface IntrinsicElements {
     'app-root': AppRoot;
+    'menu-nav': MenuNav;
     'menu-tabs': MenuTabs;
     'screen-about': ScreenAbout;
     'screen-news': ScreenNews;
     'screen-projects': ScreenProjects;
-    'screen-stories': ScreenStories;
   }
 }
 
@@ -91,11 +91,11 @@ declare module "@stencil/core" {
   export namespace JSX {
     interface IntrinsicElements {
       'app-root': LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
+      'menu-nav': LocalJSX.MenuNav & JSXBase.HTMLAttributes<HTMLMenuNavElement>;
       'menu-tabs': LocalJSX.MenuTabs & JSXBase.HTMLAttributes<HTMLMenuTabsElement>;
       'screen-about': LocalJSX.ScreenAbout & JSXBase.HTMLAttributes<HTMLScreenAboutElement>;
       'screen-news': LocalJSX.ScreenNews & JSXBase.HTMLAttributes<HTMLScreenNewsElement>;
       'screen-projects': LocalJSX.ScreenProjects & JSXBase.HTMLAttributes<HTMLScreenProjectsElement>;
-      'screen-stories': LocalJSX.ScreenStories & JSXBase.HTMLAttributes<HTMLScreenStoriesElement>;
     }
   }
 }

@@ -21,7 +21,8 @@ export class ScreenNews {
     private newsList: any;
     private newsContent: any;
     private tabs: any;
-    private newsTab: any;
+    private menuTab: any;
+    private menuNav: any;
     private nav: any;
     constructor() {
         this.twitterTimelineObservable = SocialData.twitterTimeline;
@@ -51,8 +52,8 @@ export class ScreenNews {
         });
         if (!isPlatform(window, "ipad") && !isPlatform(window, "tablet") && !isPlatform(window, "desktop")) {
             this.tabs = document.querySelector("ion-tabs");
-            this.newsTab = document.querySelector("#newsTab");
-            this.newsTab.addEventListener("click", (event) => {
+            this.menuTab = document.querySelector("#menuTab");
+            this.menuTab.addEventListener("click", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
                 this.tabs.getSelected().then((data) => {
@@ -63,14 +64,12 @@ export class ScreenNews {
             });
         } else {
             this.nav = document.querySelector("ion-nav");
-            this.newsTab = document.querySelector("#sideMenu");
-            this.newsTab.addEventListener("click", (event) => {
+            this.menuNav = document.querySelector("#menuNav");
+            this.menuNav.addEventListener("click", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                console.log(event);
                 this.nav.getActive().then((data) => {
-                    console.log(data)
-                    if (data == "tab-news") {
+                    if (data.component == "screen-news") {
                         this.newsContent.scrollToTop(500);
                     }
                 });

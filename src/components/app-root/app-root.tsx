@@ -73,10 +73,12 @@ export class AppRoot {
       return (
         <ion-router useHash={false}>
           <ion-route-redirect from="/" to='/news' />
-          <ion-route url="/news" component="screen-news"></ion-route>
-          <ion-route url="/stories" component="screen-stories"></ion-route>
-          <ion-route url="/projects" component="screen-projects"></ion-route>
-          <ion-route url="/about" component="screen-about"></ion-route>
+          <ion-route component="menu-nav">
+            <ion-route url="/news" component="screen-news"></ion-route>
+            <ion-route url="/stories" component="screen-stories"></ion-route>
+            <ion-route url="/projects" component="screen-projects"></ion-route>
+            <ion-route url="/about" component="screen-about"></ion-route>
+          </ion-route>
         </ion-router>
       )
     }
@@ -94,10 +96,10 @@ export class AppRoot {
               </ion-toolbar>
             </ion-header>
             <ion-content forceOverscroll={false}>
-              <ion-list>
+              <ion-list id="menuNav">
                 {this.appPages.map((p) => (
                   <ion-menu-toggle autoHide={false}>
-                    <ion-item href={p.url} id="sideMenu">
+                    <ion-item href={p.url}>
                       <ion-icon slot="start" name={p.icon}></ion-icon>
                       <ion-label>{p.title}</ion-label>
                     </ion-item>
