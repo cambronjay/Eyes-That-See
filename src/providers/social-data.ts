@@ -34,8 +34,33 @@ class SocialDataController {
     }
   }
 
+  async getTwitterTimelineWithCommands(queryCommands: string): Promise<any> {
+    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTimelineWithCommands?queryCommands=" + queryCommands;
+    try {
+      let response = await Utils.fetch(url, {
+        method: 'GET'
+      });
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      } else {
+        let json = await response.json();
+        console.log(json);
+        this.twitterTimeline.next(json);
+        await set("ScreenNews", json);
+      }
+    }
+    catch (err) {
+      let storedData = await get("ScreenNews");
+      if (storedData != null) {
+        this.twitterTimeline.next(storedData);
+      } else {
+        this.twitterTimeline.next(null);
+      }
+    }
+  }
+
   async refreshTimeline(): Promise<any> {
-      return await this.getTwitterTimeline();
+    return await this.getTwitterTimeline();
   }
 
   async getTweet(id: string): Promise<any> {

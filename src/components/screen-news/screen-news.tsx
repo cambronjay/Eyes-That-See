@@ -1,5 +1,6 @@
 import { Component, h, State } from '@stencil/core';
 import { SocialData } from "../../providers/social-data";
+import { Utils } from "../../providers/utils";
 import { Observable, Subscription } from "rxjs";
 import { Plugins } from '@capacitor/core';
 import { isPlatform } from '@ionic/core';
@@ -11,14 +12,15 @@ const { CapacitorVideoPlayer } = Plugins;
     styleUrl: 'screen-news.css',
 })
 export class ScreenNews {
-    @State() tweets: any;
+    @State() tweets: any = [];
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private twitterTimelineObservable: Observable<any>;
     private twitterTimelineSubscription: Subscription;
     public players: any;
     public player: any;
     private refresher: any;
-    private newsList: any;
+    private infiniteScroll: any;
+    private list: any;
     private newsContent: any;
     private tabs: any;
     private menuTab: any;
@@ -35,20 +37,34 @@ export class ScreenNews {
     async componentDidLoad() {
         //   SocialData.getSocialData();
         this.twitterTimelineSubscription = this.twitterTimelineObservable.subscribe(data => {
-            this.tweets = data;
+            this.tweets = this.tweets.concat(data);
         });
-        this.refresher = document.getElementById("refresher");
+        this.refresher = document.getElementById("news-refresher");
         this.newsContent = document.getElementById("newsContent");
-        this.newsList = document.getElementById("newsList");
-        this.refresher.addEventListener("ionRefresh", () => {
-            setTimeout(() => {
-                SocialData.refreshTimeline().then(() => {
+        this.list = document.getElementById("newsList");
+        this.refresher.addEventListener("ionRefresh", async () => {
+            await Utils.wait(500);
+            SocialData.refreshTimeline()
+                .then(() => {
                     this.refresher.complete();
                 })
-                    .catch(() => {
-                        this.refresher.complete();
-                    });
-            }, 2000);
+                .catch(() => {
+                    this.refresher.complete();
+                });
+        });
+        this.infiniteScroll = document.getElementById('news-infinite-scroll');
+        this.infiniteScroll.addEventListener('ionInfinite', async () => {
+            await Utils.wait(500);
+            //console.log(this.tweets[this.tweets.length - 6].id)
+            //  console.log(this.tweets[this.tweets.length - 1].id)
+            let id = this.tweets[this.tweets.length - 1].id;
+            await SocialData.getTwitterTimelineWithCommands(`&since_id=${id}&max_id=${id}`)
+                .then(() => {
+                    this.infiniteScroll.complete();
+                })
+                .catch(() => {
+                    this.infiniteScroll.complete();
+                });
         });
         if (!isPlatform(window, "ipad") && !isPlatform(window, "tablet") && !isPlatform(window, "desktop")) {
             this.tabs = document.querySelector("ion-tabs");
@@ -300,7 +316,7 @@ export class ScreenNews {
             </ion-header>,
 
             <ion-content id="newsContent">
-                <ion-refresher slot="fixed" id="refresher">
+                <ion-refresher slot="fixed" id="news-refresher">
                     <ion-refresher-content pulling-icon="arrow-down" refreshing-spinner="crescent">
                     </ion-refresher-content>
                 </ion-refresher>
@@ -311,6 +327,10 @@ export class ScreenNews {
                         </ion-col>
                     </ion-row>
                 </ion-grid>
+                <ion-infinite-scroll id="news-infinite-scroll">
+                    <ion-infinite-scroll-content loading-spinner="crescent">
+                    </ion-infinite-scroll-content>
+                </ion-infinite-scroll>
             </ion-content>
         ];
     }

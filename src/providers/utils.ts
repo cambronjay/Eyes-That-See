@@ -7,6 +7,14 @@ class UtilsController {
         return response;
     }
 
+    async wait(time) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, time);
+        });
+    }
+
 }
 
 export const Utils = new UtilsController();
