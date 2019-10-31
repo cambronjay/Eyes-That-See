@@ -20,8 +20,7 @@ export class ScreenNews {
     public player: any;
     private refresher: any;
     private infiniteScroll: any;
-    private list: any;
-    private newsContent: any;
+    private content: any;
     private tabs: any;
     private menuTab: any;
     private menuNav: any;
@@ -35,16 +34,19 @@ export class ScreenNews {
     }
 
     async componentDidLoad() {
-        //   SocialData.getSocialData();
         this.twitterTimelineSubscription = this.twitterTimelineObservable.subscribe(data => {
-            this.tweets = this.tweets.concat(data);
+            if(data.isRefresh){
+                this.tweets = data.tweets.concat(this.tweets);
+            } else {
+               // this.tweets = this.tweets.concat(data);
+               this.tweets = data.tweets.concat(this.tweets);
+            }
         });
         this.refresher = document.getElementById("news-refresher");
-        this.newsContent = document.getElementById("newsContent");
-        this.list = document.getElementById("newsList");
+        this.content = document.getElementById("news-content");
         this.refresher.addEventListener("ionRefresh", async () => {
             await Utils.wait(500);
-            SocialData.refreshTimeline()
+            SocialData.refreshTimeline(this.tweets[0].id_str)
                 .then(() => {
                     this.refresher.complete();
                 })
@@ -55,7 +57,7 @@ export class ScreenNews {
         this.infiniteScroll = document.getElementById('news-infinite-scroll');
         this.infiniteScroll.addEventListener('ionInfinite', async () => {
             await Utils.wait(500);
-            await SocialData.getTwitterTimelineWithCommands(`max_id=${this.tweets[this.tweets.length - 1].id_str}`)
+            await SocialData.getMoreTweets(this.tweets[this.tweets.length - 1].id_str)
                 .then(() => {
                     this.infiniteScroll.complete();
                 })
@@ -71,7 +73,7 @@ export class ScreenNews {
                 event.stopPropagation();
                 this.tabs.getSelected().then((data) => {
                     if (data == "tab-news") {
-                        this.newsContent.scrollToTop(500);
+                        this.content.scrollToTop(500);
                     }
                 });
             });
@@ -83,17 +85,11 @@ export class ScreenNews {
                 event.stopPropagation();
                 this.nav.getActive().then((data) => {
                     if (data.component == "screen-news") {
-                        this.newsContent.scrollToTop(500);
+                        this.content.scrollToTop(500);
                     }
                 });
             });
         }
-    }
-
-
-    componentWillRender() {
-        //  SocialData.getSocialData();
-        // set html on load and add class <html class="md">
     }
 
     componentDidRender() {
@@ -312,7 +308,7 @@ export class ScreenNews {
                 </ion-toolbar>
             </ion-header>,
 
-            <ion-content id="newsContent">
+            <ion-content id="news-content">
                 <ion-refresher slot="fixed" id="news-refresher">
                     <ion-refresher-content pulling-icon="arrow-down" refreshing-spinner="crescent">
                     </ion-refresher-content>

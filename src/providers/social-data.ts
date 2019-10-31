@@ -1,31 +1,43 @@
 import { BehaviorSubject } from "rxjs";
-import { set, get } from "./storage";
+import { Storage } from "./storage";
 import { Utils } from "./utils";
 
 class SocialDataController {
   public twitterTimeline: BehaviorSubject<any> = new BehaviorSubject<any>([]);
 
   constructor() {
-    this.getTwitterTimeline();
+    this.getTwitterTimeline('count=15', false, false);
   }
 
-  async getTwitterTimeline(): Promise<any> {
-    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTimeline";
+  async getTwitterTimeline(query: string, isRefresh: boolean, isInfinite: boolean): Promise<any> {
+    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTimeline?queryCommands=" + query;
     try {
-      let response = await Utils.fetch(url, {
+      const response = await Utils.fetch(url, {
         method: 'GET'
       });
       if (!response.ok) {
         throw new Error(response.statusText);
       } else {
-        let json = await response.json();
-        console.log(json);
-        this.twitterTimeline.next(json);
-        await set("ScreenNews", json);
+        const json = await response.json();
+        if (isInfinite) {
+          json.shift();
+          const storedData = await Storage.get("ScreenNews");
+          this.twitterTimeline.next(storedData.push(json));
+        } else if(isRefresh){
+          const storedData = await Storage.get("ScreenNews");
+          this.twitterTimeline.next(storedData.push(json));
+        }
+        let tweetData = {
+          isRefresh: isRefresh,
+          isInfinite: isInfinite,
+          tweets: json
+        }
+        this.twitterTimeline.next(tweetData);
+        await Storage.set("ScreenNews", json);
       }
     }
     catch (err) {
-      let storedData = await get("ScreenNews");
+      const storedData = await Storage.get("ScreenNews");
       if (storedData != null) {
         this.twitterTimeline.next(storedData);
       } else {
@@ -34,65 +46,12 @@ class SocialDataController {
     }
   }
 
-  async getTwitterTimelineWithCommands(queryCommands: string): Promise<any> {
-    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTimelineWithCommands?queryCommands=" + queryCommands;
-    try {
-      let response = await Utils.fetch(url, {
-        method: 'GET'
-      });
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      } else {
-        let json = await response.json();
-        json.shift();
-        this.twitterTimeline.next(json);
-        return await set("ScreenNews", json);
-      }
-    }
-    catch (err) {
-      let storedData = await get("ScreenNews");
-      if (storedData != null) {
-        this.twitterTimeline.next(storedData);
-      } else {
-        this.twitterTimeline.next(null);
-      }
-    }
+  async getMoreTweets(id: string): Promise<any> {
+    return await this.getTwitterTimeline(`max_id=${id}`, false, true);
   }
 
-  async refreshTimeline(): Promise<any> {
-    return await this.getTwitterTimeline();
-  }
-
-  async getTweet(id: string): Promise<any> {
-    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTweet?id=" + id;
-    try {
-      let response = await Utils.fetch(url, {
-        method: 'GET'
-      });
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      } else {
-        let json = await response.json();
-        console.log(json);
-        return json;
-        //this.twitterTimeline.next(json);
-        //await set("ScreenNews", json);
-      }
-    }
-    catch (err) {
-      console.log(err)
-      // return fetch('/some-data.json')
-      // .then(response => response.json())
-      // .then(data => {
-      //   this.content = data;
-      // });
-      //let storedData = await get("ScreenNews");
-      // if (storedData != null) {
-      //   this.twitterTimeline.next(storedData);
-      // } else {
-      //  this.twitterTimeline.next(null);
-      //}
-    }
+  async refreshTimeline(id: string): Promise<any> {
+    return await this.getTwitterTimeline(`since_id=${id}`, true, false);
   }
 
 }
