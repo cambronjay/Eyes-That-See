@@ -55,10 +55,7 @@ export class ScreenNews {
         this.infiniteScroll = document.getElementById('news-infinite-scroll');
         this.infiniteScroll.addEventListener('ionInfinite', async () => {
             await Utils.wait(500);
-            //console.log(this.tweets[this.tweets.length - 6].id)
-            //  console.log(this.tweets[this.tweets.length - 1].id)
-            let id = this.tweets[this.tweets.length - 1].id;
-            await SocialData.getTwitterTimelineWithCommands(`&since_id=${id}&max_id=${id}`)
+            await SocialData.getTwitterTimelineWithCommands(`max_id=${this.tweets[this.tweets.length - 1].id_str}`)
                 .then(() => {
                     this.infiniteScroll.complete();
                 })

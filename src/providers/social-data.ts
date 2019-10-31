@@ -44,9 +44,9 @@ class SocialDataController {
         throw new Error(response.statusText);
       } else {
         let json = await response.json();
-        console.log(json);
+        json.shift();
         this.twitterTimeline.next(json);
-        await set("ScreenNews", json);
+        return await set("ScreenNews", json);
       }
     }
     catch (err) {
