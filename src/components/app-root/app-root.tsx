@@ -1,8 +1,7 @@
 import '@ionic/core';
-import { Component, Element, State, h } from '@stencil/core';
+import { Component, State, h } from '@stencil/core';
 import { Plugins } from '@capacitor/core';
 import { isPlatform } from '@ionic/core';
-import { Storage } from '../../providers/storage';
 const { SplashScreen } = Plugins;
 
 @Component({
@@ -11,28 +10,33 @@ const { SplashScreen } = Plugins;
 })
 export class AppRoot {
   @State() isLargeScreen = false;
-  @Element() el: HTMLElement;
-
+  private menuNav: any;
+  private nav: any;
+  
   appPages = [
     {
       title: 'News',
       url: '/news',
-      icon: 'today'
+      icon: 'today',
+      id: 'screen-news'
     },
     {
       title: 'Stories',
       url: '/stories',
-      icon: 'book'
+      icon: 'book',
+      id: 'screen-stories'
     },
     {
       title: 'Projects',
       url: '/projects',
-      icon: 'list-box'
+      icon: 'list-box',
+      id: 'screen-projects'
     },
     {
       title: 'About',
       url: '/about',
-      icon: 'people'
+      icon: 'people',
+      id: 'screen-about'
     }
   ];
 
@@ -41,6 +45,22 @@ export class AppRoot {
   }
 
   async componentDidLoad() {
+    if (isPlatform(window, "ipad") || isPlatform(window, "tablet") || isPlatform(window, "desktop")) {
+      this.nav = document.querySelector("ion-router");
+      //this.menuNav = document.querySelector("#menuNav");
+      this.nav.addEventListener("ionRouteDidChange", (event) => {
+        console.log(event)
+          event.preventDefault();
+          event.stopPropagation();
+          // this.nav.getActive().then((data) => {
+          //   console.log(data)
+          //   let activeNavIcon = document.querySelector(`#${data.component}-icon`);
+          //   let activeNavText = document.querySelector(`#${data.component}-text`);
+          //   activeNavIcon.setAttribute("color", "primary");
+          //   activeNavText.setAttribute("color", "primary");
+          // });
+      });
+    }
     try {
       await SplashScreen.hide();
     } catch {
@@ -52,7 +72,7 @@ export class AppRoot {
     if (!this.isLargeScreen) {
       return (
         <ion-router useHash={false}>
-          <ion-route-redirect from="/" to='/news' />
+          {/* <ion-route-redirect from="/" to='/news' /> */}
           <ion-route component="menu-tabs">
             <ion-route url="/news" component="tab-news"></ion-route>
             <ion-route url="/stories" component="tab-stories"></ion-route>
@@ -64,7 +84,7 @@ export class AppRoot {
     } else {
       return (
         <ion-router useHash={false}>
-          <ion-route-redirect from="/" to='/news' />
+          {/* <ion-route-redirect from="/" to='/news' /> */}
           <ion-route component="menu-nav">
             <ion-route url="/news" component="screen-news"></ion-route>
             <ion-route url="/stories" component="screen-stories"></ion-route>
@@ -91,9 +111,9 @@ export class AppRoot {
               <ion-list id="menuNav">
                 {this.appPages.map((p) => (
                   <ion-menu-toggle autoHide={false}>
-                    <ion-item href={p.url}>
-                      <ion-icon slot="start" name={p.icon}></ion-icon>
-                      <ion-label>{p.title}</ion-label>
+                    <ion-item href={p.url} detail={false}>
+                      <ion-icon slot="start" name={p.icon} id={p.id + '-icon'} color="medium"></ion-icon>
+                      <ion-label id={p.id + '-text'} color="medium">{p.title}</ion-label>
                     </ion-item>
                   </ion-menu-toggle>
                 ))}

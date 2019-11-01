@@ -16,7 +16,7 @@ class SocialDataController {
         this.twitterTimeline = storedData;
         this.twitterTimelineSubject.next(storedData);
       } else {
-        this.getTwitterTimeline({ count: '5', query: '' }, false, false);
+        this.getTwitterTimeline({ count: '15', query: '' }, false, false);
       }
     } else {
       this.twitterTimelineSubject.next(this.twitterTimeline);

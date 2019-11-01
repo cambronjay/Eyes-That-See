@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 class UtilsController {
 
     constructor() { }
@@ -13,6 +15,17 @@ class UtilsController {
                 resolve();
             }, time);
         });
+    }
+
+    public formatDate(date: string) {
+        return moment.default(new Date(date).toISOString()).format('l');
+    }
+
+    public formatTweets(tweet: string) {
+        let value = tweet;
+        let newString = value.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+        let newStringTwo = newString.replace(/RT/g, '');
+        return newStringTwo;
     }
 
 }

@@ -96,13 +96,6 @@ export class ScreenNews {
         this.twitterTimelineSubscription.unsubscribe();
     }
 
-    private fixTweets(string) {
-        var value = string;
-        var newString = value.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
-        var newStringTwo = newString.replace(/RT/g, '');
-        return newStringTwo;
-    }
-
     async playVideo(e, url: string) {
         e.preventDefault();
         let videoPlayer: any;
@@ -184,13 +177,13 @@ export class ScreenNews {
                             : <h2 innerHTML={tweet.quoted_status.user.name}></h2>
                         }
                         {tweet.quoted_status.retweeted_status
-                            ? <p innerHTML={'@' + tweet.quoted_status.retweeted_status.user.screen_name}></p>
-                            : <p innerHTML={'@' + tweet.quoted_status.user.screen_name}></p>
+                            ? <p innerHTML={'@' + tweet.quoted_status.retweeted_status.user.screen_name + ' &bull; ' + Utils.formatDate(tweet.quoted_status.retweeted_status.created_at)}></p>
+                            : <p innerHTML={'@' + tweet.quoted_status.user.screen_name + ' &bull; ' + Utils.formatDate(tweet.quoted_status.created_at)}></p>
                         }
                     </ion-label>
                 </ion-item>
                 <ion-card-content>
-                    {this.fixTweets(tweet.quoted_status.full_text)}
+                    {Utils.formatTweets(tweet.quoted_status.full_text)}
                 </ion-card-content>
                 {this.renderMedia(tweet.quoted_status)}
             </ion-card>)
@@ -229,15 +222,16 @@ export class ScreenNews {
                                             : <h2 innerHTML={tweet.user.name}></h2>
                                         }
                                         {tweet.retweeted_status
-                                            ? <p innerHTML={'@' + tweet.retweeted_status.user.screen_name}></p>
-                                            : <p innerHTML={'@' + tweet.user.screen_name}></p>
+                                            ? <p innerHTML={'@' + tweet.retweeted_status.user.screen_name + ' &bull; ' + Utils.formatDate(tweet.retweeted_status.created_at)}></p>
+                                            : <p innerHTML={'@' + tweet.user.screen_name + ' &bull; ' + Utils.formatDate(tweet.created_at)}></p>
                                         }
+                                        <p></p>
                                     </ion-label>
                                 </ion-item>
                                 <ion-card-content>
                                     {tweet.retweeted_status
-                                        ? this.fixTweets(tweet.retweeted_status.full_text)
-                                        : this.fixTweets(tweet.full_text)
+                                        ? Utils.formatTweets(tweet.retweeted_status.full_text)
+                                        : Utils.formatTweets(tweet.full_text)
                                     }
                                 </ion-card-content>
                                 {this.renderMedia(tweet)}
