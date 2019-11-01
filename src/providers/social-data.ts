@@ -3,14 +3,28 @@ import { Storage } from "./storage";
 import { Utils } from "./utils";
 
 class SocialDataController {
-  public twitterTimeline: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+  public twitterTimelineSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+  private twitterTimeline: any = [];
 
   constructor() {
-    this.getTwitterTimeline('count=15', false, false);
   }
 
-  async getTwitterTimeline(query: string, isRefresh: boolean, isInfinite: boolean): Promise<any> {
-    const url = "https://us-central1-api-project-324114021707.cloudfunctions.net/getTimeline?queryCommands=" + query;
+  async loadTimeline(): Promise<any> {
+    if (this.twitterTimeline.length == 0) {
+      const storedData = await Storage.get("ScreenNews");
+      if (storedData != null) {
+        this.twitterTimeline = storedData;
+        this.twitterTimelineSubject.next(storedData);
+      } else {
+        this.getTwitterTimeline({ count: '5', query: '' }, false, false);
+      }
+    } else {
+      this.twitterTimelineSubject.next(this.twitterTimeline);
+    }
+  }
+
+  async getTwitterTimeline(query: any, isRefresh: boolean, isInfinite: boolean): Promise<any> {
+    const url = `https://us-central1-api-project-324114021707.cloudfunctions.net/getTimeline?count=${query.count}&query=${query.query}`;
     try {
       const response = await Utils.fetch(url, {
         method: 'GET'
@@ -18,40 +32,29 @@ class SocialDataController {
       if (!response.ok) {
         throw new Error(response.statusText);
       } else {
-        const json = await response.json();
+        let json = await response.json();
         if (isInfinite) {
-          json.shift();
-          const storedData = await Storage.get("ScreenNews");
-          this.twitterTimeline.next(storedData.push(json));
-        } else if(isRefresh){
-          const storedData = await Storage.get("ScreenNews");
-          this.twitterTimeline.next(storedData.push(json));
+          json = json.filter((tweet, index) => index != 0);
+          this.twitterTimeline = this.twitterTimeline.concat(json);
+        } else if (isRefresh) {
+          this.twitterTimeline = json.concat(this.twitterTimeline);
+        } else {
+          this.twitterTimeline = json;
         }
-        let tweetData = {
-          isRefresh: isRefresh,
-          isInfinite: isInfinite,
-          tweets: json
-        }
-        this.twitterTimeline.next(tweetData);
-        await Storage.set("ScreenNews", json);
+        this.twitterTimelineSubject.next(this.twitterTimeline);
+        await Storage.set("ScreenNews", this.twitterTimeline);
       }
     }
-    catch (err) {
+    catch (error) {
       const storedData = await Storage.get("ScreenNews");
       if (storedData != null) {
-        this.twitterTimeline.next(storedData);
+        this.twitterTimeline = storedData;
+        this.twitterTimelineSubject.next(storedData);
       } else {
-        this.twitterTimeline.next(null);
+        this.twitterTimeline = [];
+        this.twitterTimelineSubject.next(null);
       }
     }
-  }
-
-  async getMoreTweets(id: string): Promise<any> {
-    return await this.getTwitterTimeline(`max_id=${id}`, false, true);
-  }
-
-  async refreshTimeline(id: string): Promise<any> {
-    return await this.getTwitterTimeline(`since_id=${id}`, true, false);
   }
 
 }

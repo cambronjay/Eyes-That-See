@@ -2,6 +2,7 @@ import '@ionic/core';
 import { Component, Element, State, h } from '@stencil/core';
 import { Plugins } from '@capacitor/core';
 import { isPlatform } from '@ionic/core';
+import { Storage } from '../../providers/storage';
 const { SplashScreen } = Plugins;
 
 @Component({
@@ -9,8 +10,6 @@ const { SplashScreen } = Plugins;
   styleUrl: 'app-root.css'
 })
 export class AppRoot {
-  @State() loggedIn = true;
-  hasSeenTutorial = true;
   @State() isLargeScreen = false;
   @Element() el: HTMLElement;
 
@@ -42,18 +41,11 @@ export class AppRoot {
   }
 
   async componentDidLoad() {
-    this.checkLoginStatus();
     try {
       await SplashScreen.hide();
     } catch {
       return;
     }
-  }
-
-  async checkLoginStatus() {
-    return true;
-    // const loggedIn = this.loggedIn = await UserData.isLoggedIn();
-    // return loggedIn;
   }
 
   renderRouter() {

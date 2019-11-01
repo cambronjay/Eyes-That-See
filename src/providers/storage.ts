@@ -16,7 +16,7 @@ class StorageController {
     }
 
     async set(key: string, value: any): Promise<void> {
-        return await this.storage.set({
+        await this.storage.set({
             key: key,
             value: JSON.stringify(value)
         });
@@ -28,7 +28,7 @@ class StorageController {
     }
 
     async remove(key: string): Promise<void> {
-        return await this.storage.remove({
+        await this.storage.remove({
             key: key
         });
     }

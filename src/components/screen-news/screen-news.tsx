@@ -12,7 +12,7 @@ const { CapacitorVideoPlayer } = Plugins;
     styleUrl: 'screen-news.css',
 })
 export class ScreenNews {
-    @State() tweets: any = [];
+    @State() tweets: any;
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private twitterTimelineObservable: Observable<any>;
     private twitterTimelineSubscription: Subscription;
@@ -26,7 +26,8 @@ export class ScreenNews {
     private menuNav: any;
     private nav: any;
     constructor() {
-        this.twitterTimelineObservable = SocialData.twitterTimeline;
+        SocialData.loadTimeline();
+        this.twitterTimelineObservable = SocialData.twitterTimelineSubject;
     }
 
     componentWillLoad() {
@@ -35,18 +36,13 @@ export class ScreenNews {
 
     async componentDidLoad() {
         this.twitterTimelineSubscription = this.twitterTimelineObservable.subscribe(data => {
-            if(data.isRefresh){
-                this.tweets = data.tweets.concat(this.tweets);
-            } else {
-               // this.tweets = this.tweets.concat(data);
-               this.tweets = data.tweets.concat(this.tweets);
-            }
+            this.tweets = data;
         });
         this.refresher = document.getElementById("news-refresher");
         this.content = document.getElementById("news-content");
         this.refresher.addEventListener("ionRefresh", async () => {
             await Utils.wait(500);
-            SocialData.refreshTimeline(this.tweets[0].id_str)
+            await SocialData.getTwitterTimeline({ count: '5', query: 'since_id=' + this.tweets[0].id_str }, true, false)
                 .then(() => {
                     this.refresher.complete();
                 })
@@ -57,7 +53,7 @@ export class ScreenNews {
         this.infiniteScroll = document.getElementById('news-infinite-scroll');
         this.infiniteScroll.addEventListener('ionInfinite', async () => {
             await Utils.wait(500);
-            await SocialData.getMoreTweets(this.tweets[this.tweets.length - 1].id_str)
+            await SocialData.getTwitterTimeline({ count: '5', query: 'max_id=' + this.tweets[this.tweets.length - 1].id_str }, false, true)
                 .then(() => {
                     this.infiniteScroll.complete();
                 })
