@@ -17,6 +17,10 @@ export namespace Components {
   interface ScreenNews {}
   interface ScreenProjects {}
   interface ScreenStories {}
+  interface ScreenStoryDetails {
+    'goback': string;
+    'storyId': number;
+  }
 }
 
 declare global {
@@ -63,6 +67,12 @@ declare global {
     prototype: HTMLScreenStoriesElement;
     new (): HTMLScreenStoriesElement;
   };
+
+  interface HTMLScreenStoryDetailsElement extends Components.ScreenStoryDetails, HTMLStencilElement {}
+  var HTMLScreenStoryDetailsElement: {
+    prototype: HTMLScreenStoryDetailsElement;
+    new (): HTMLScreenStoryDetailsElement;
+  };
   interface HTMLElementTagNameMap {
     'app-root': HTMLAppRootElement;
     'menu-nav': HTMLMenuNavElement;
@@ -71,6 +81,7 @@ declare global {
     'screen-news': HTMLScreenNewsElement;
     'screen-projects': HTMLScreenProjectsElement;
     'screen-stories': HTMLScreenStoriesElement;
+    'screen-story-details': HTMLScreenStoryDetailsElement;
   }
 }
 
@@ -82,6 +93,10 @@ declare namespace LocalJSX {
   interface ScreenNews {}
   interface ScreenProjects {}
   interface ScreenStories {}
+  interface ScreenStoryDetails {
+    'goback'?: string;
+    'storyId'?: number;
+  }
 
   interface IntrinsicElements {
     'app-root': AppRoot;
@@ -91,6 +106,7 @@ declare namespace LocalJSX {
     'screen-news': ScreenNews;
     'screen-projects': ScreenProjects;
     'screen-stories': ScreenStories;
+    'screen-story-details': ScreenStoryDetails;
   }
 }
 
@@ -107,6 +123,7 @@ declare module "@stencil/core" {
       'screen-news': LocalJSX.ScreenNews & JSXBase.HTMLAttributes<HTMLScreenNewsElement>;
       'screen-projects': LocalJSX.ScreenProjects & JSXBase.HTMLAttributes<HTMLScreenProjectsElement>;
       'screen-stories': LocalJSX.ScreenStories & JSXBase.HTMLAttributes<HTMLScreenStoriesElement>;
+      'screen-story-details': LocalJSX.ScreenStoryDetails & JSXBase.HTMLAttributes<HTMLScreenStoryDetailsElement>;
     }
   }
 }

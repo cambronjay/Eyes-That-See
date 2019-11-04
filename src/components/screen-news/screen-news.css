@@ -13,9 +13,6 @@
 .skeleton-70 {
     width: 70%;
 }
-.disableScroll {
-    --overflow: hidden !important;
-}
 .img-container {
     overflow: hidden !important;
     height: 25vh;

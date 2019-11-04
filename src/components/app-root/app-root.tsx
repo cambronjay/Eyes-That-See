@@ -57,24 +57,49 @@ export class AppRoot {
       event.stopPropagation();
       if (Utils.isDevice()) {
         Haptics.impact({
-          style: HapticsImpactStyle.Medium
+          style: HapticsImpactStyle.Heavy
         });
       }
+      let currentScreen;
+      if (event.detail.to.includes("story-details")) {
+        currentScreen = "/stories";
+      } else {
+        currentScreen = event.detail.to;
+      }
       if (this.isLargeScreen) {
-        let toNavIcon = event.detail.to.replace("/", "");
-        let toNavText = event.detail.to.replace("/", "");
+        let toNavIcon;
+        let toNavText;
+        let fromNavIcon;
+        let fromNavText;
+        if (event.detail.to.includes("story-details")) {
+          toNavIcon = "/stories";
+          toNavText = "/stories";
+        } else {
+          toNavIcon = event.detail.to;
+          toNavText = event.detail.to;
+        }
+        if (event.detail.from.includes("story-details")) {
+          fromNavIcon = "/stories";
+          fromNavText = "/stories";
+        } else {
+          fromNavIcon = event.detail.from;
+          fromNavText = event.detail.from;
+        }
+        toNavIcon = toNavIcon.replace("/", "");
+        toNavText = toNavText.replace("/", "");
         toNavIcon = document.querySelector(`#${toNavIcon}-icon`);
         toNavText = document.querySelector(`#${toNavText}-text`);
         toNavIcon.setAttribute("color", "primary");
         toNavText.setAttribute("color", "primary");
-        let fromNavIcon = event.detail.from.replace("/", "");
-        let fromNavText = event.detail.from.replace("/", "");
+        fromNavIcon = fromNavIcon.replace("/", "");
+        fromNavText = fromNavText.replace("/", "");
         fromNavIcon = document.querySelector(`#${fromNavIcon}-icon`);
         fromNavText = document.querySelector(`#${fromNavText}-text`);
         fromNavIcon.setAttribute("color", "medium");
         fromNavText.setAttribute("color", "medium");
       }
-      let currentScreen = event.detail.to.replace("/", "");
+      currentScreen = currentScreen.replace("/", "");
+      console.log(currentScreen)
       await Storage.set("CurrentScreen", currentScreen);
     });
     try {
@@ -84,32 +109,37 @@ export class AppRoot {
     }
   }
 
-  renderRouter() {
+  renderStoryRoute() {
     if (!this.isLargeScreen) {
       return (
-        <ion-router useHash={false} id="ionicRouter">
-          <ion-route-redirect from="/" to={this.startScreen}></ion-route-redirect>
-          <ion-route component="menu-tabs">
-            <ion-route url="/news" component="tab-news"></ion-route>
-            <ion-route url="/stories" component="tab-stories"></ion-route>
-            <ion-route url="/projects" component="tab-projects"></ion-route>
-            <ion-route url="/about" component="tab-about"></ion-route>
-          </ion-route>
-        </ion-router>
+        <ion-route url="/stories" component="tab-stories">
+          <ion-route component="screen-stories"></ion-route>
+          <ion-route url="/story-details/:storyId" component="screen-story-details" componentProps={{ goback: '/stories' }}></ion-route>
+        </ion-route>
       )
     } else {
       return (
-        <ion-router useHash={false} id="ionicRouter">
-          <ion-route-redirect from="/" to={this.startScreen}></ion-route-redirect>
-          <ion-route component="menu-nav">
-            <ion-route url="/news" component="screen-news"></ion-route>
-            <ion-route url="/stories" component="screen-stories"></ion-route>
-            <ion-route url="/projects" component="screen-projects"></ion-route>
-            <ion-route url="/about" component="screen-about"></ion-route>
-          </ion-route>
-        </ion-router>
+        <ion-route url="/stories" component="ion-nav">
+          <ion-route component="screen-stories"></ion-route>
+          <ion-route url="/story-details/:storyId" component="screen-story-details" componentProps={{ goback: '/stories' }}></ion-route>
+        </ion-route>
       )
     }
+  }
+
+  renderRouter() {
+    return (
+      <ion-router useHash={false} id="ionicRouter">
+        <ion-route-redirect from="/" to={this.startScreen}></ion-route-redirect>
+        <ion-route component={!this.isLargeScreen ? "menu-tabs" : "menu-nav"}>
+          <ion-route url="/news" component={!this.isLargeScreen ? "tab-news" : "screen-news"}></ion-route>
+          {/* <ion-route url="/stories" component={!this.isLargeScreen ? "tab-stories" : "screen-stories"}></ion-route> */}
+          {this.renderStoryRoute()}
+          <ion-route url="/projects" component={!this.isLargeScreen ? "tab-projects" : "screen-projects"}></ion-route>
+          <ion-route url="/about" component={!this.isLargeScreen ? "tab-about" : "screen-about"}></ion-route>
+        </ion-route>
+      </ion-router>
+    )
   }
 
   render() {

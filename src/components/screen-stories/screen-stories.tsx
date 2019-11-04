@@ -1,4 +1,4 @@
-import { Component, h, State } from '@stencil/core';
+import { Component, h, State, Prop } from '@stencil/core';
 import { WordPressData } from "../../providers/wordpress-data";
 import { Utils } from "../../providers/utils";
 import { Observable, Subscription } from "rxjs";
@@ -10,16 +10,17 @@ import { Observable, Subscription } from "rxjs";
 
 export class ScreenStories {
     @State() stories: any;
+    @Prop({ connect: 'ion-modal-controller' }) modalCtrl: HTMLIonModalControllerElement;
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private storiesObservable: Observable<any>;
     private storiesSubscription: Subscription;
-    private refresher: any;
-    private infiniteScroll: any;
-    private content: any;
-    private tabs: any;
-    private menuTab: any;
-    private menuNav: any;
-    private nav: any;
+    private refresher: HTMLIonRefresherElement;
+    private infiniteScroll: HTMLIonInfiniteScrollElement;
+    private content: HTMLIonContentElement;
+    private tabs: HTMLIonTabsElement;
+    private menuTab: HTMLIonTabBarElement;
+    private menuNav: HTMLIonListElement;
+    private nav: HTMLIonNavElement;
 
     constructor() {
         WordPressData.loadStories();
@@ -30,9 +31,11 @@ export class ScreenStories {
         this.storiesSubscription = this.storiesObservable.subscribe(data => {
             this.stories = data;
         });
-        this.refresher = document.getElementById("stories-refresher");
-        this.content = document.getElementById("stories-content");
-        this.refresher.addEventListener("ionRefresh", async () => {
+        this.refresher = document.querySelector("#stories-refresher");
+        this.content = document.querySelector("#stories-content");
+        this.refresher.addEventListener("ionRefresh", async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             await Utils.wait(500);
             await WordPressData.getStories({ count: '15', offset: '0' }, false)
                 .then(() => {
@@ -42,8 +45,10 @@ export class ScreenStories {
                     this.refresher.complete();
                 });
         });
-        this.infiniteScroll = document.getElementById('stories-infinite-scroll');
-        this.infiniteScroll.addEventListener('ionInfinite', async () => {
+        this.infiniteScroll = document.querySelector('#stories-infinite-scroll');
+        this.infiniteScroll.addEventListener('ionInfinite', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             await Utils.wait(500);
             await WordPressData.getStories({ count: '5', offset: this.stories.length.toString() }, true)
                 .then(() => {
@@ -84,6 +89,16 @@ export class ScreenStories {
         this.storiesSubscription.unsubscribe();
     }
 
+    async viewStory(item: any) {
+        const modal = await this.modalCtrl.create({
+            component: 'modal-story',
+            componentProps: {
+                story: item,
+            }
+        });
+        await modal.present();
+    }
+
     renderAvatar(story) {
         if (story.thumbnail_images) {
             return (<ion-img src={story.thumbnail_images.large.url}></ion-img>)
@@ -101,7 +116,8 @@ export class ScreenStories {
     }
 
     renderItem(item: any, index: number) {
-        return (<ion-item>
+        return (
+        <ion-item detail={false} href={`/stories/story-details/${item.id}`}>
             <ion-avatar slot="start">
                 {this.renderAvatar(item)}
             </ion-avatar>
@@ -110,15 +126,13 @@ export class ScreenStories {
                 <h3 innerHTML={Utils.formatDate(item.date)}></h3>
                 <p innerHTML={item.excerpt}></p>
             </ion-label>
-        </ion-item>)
+        </ion-item>
+        )
     }
 
-    addScroll() {
-        this.content.classList.remove("disableScroll");
-    }
-
-    removeScroll() {
-        this.content.classList.add("disableScroll");
+    enableLoaders() {
+        this.refresher.disabled = false;
+        this.infiniteScroll.disabled = false;
     }
 
     renderData() {
@@ -126,14 +140,13 @@ export class ScreenStories {
             if (this.stories.length > 0) {
                 return (
                     <ion-list id="storiesList">
-                        {this.addScroll()}
+                        {this.enableLoaders()}
                         <ion-virtual-scroll items={this.stories} renderItem={(item, index) => this.renderItem(item, index)} itemHeight={() => 87}></ion-virtual-scroll>
                     </ion-list>
                 )
             } else {
                 return (
                     <ion-list>
-                        {this.removeScroll()}
                         {this.skeleton.map(() => (
                             <ion-item lines="none">
                                 <ion-avatar slot="start">
@@ -179,12 +192,12 @@ export class ScreenStories {
             </ion-header>,
 
             <ion-content id="stories-content">
-                <ion-refresher slot="fixed" id="stories-refresher">
+                <ion-refresher slot="fixed" id="stories-refresher" disabled={true}>
                     <ion-refresher-content pulling-icon="arrow-down" refreshing-spinner="crescent">
                     </ion-refresher-content>
                 </ion-refresher>
                 {this.renderData()}
-                <ion-infinite-scroll id="stories-infinite-scroll">
+                <ion-infinite-scroll id="stories-infinite-scroll" disabled={true}>
                     <ion-infinite-scroll-content loading-spinner="crescent">
                     </ion-infinite-scroll-content>
                 </ion-infinite-scroll>

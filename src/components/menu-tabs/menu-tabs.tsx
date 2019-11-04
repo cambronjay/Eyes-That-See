@@ -10,7 +10,9 @@ export class MenuTabs {
         return [
             <ion-tabs>
                 <ion-tab tab="tab-news" component="screen-news"></ion-tab>
-                <ion-tab tab="tab-stories" component="screen-stories"></ion-tab>
+                <ion-tab tab="tab-stories">
+                    <ion-nav></ion-nav>
+                </ion-tab>
                 <ion-tab tab="tab-projects" component="screen-projects"></ion-tab>
                 <ion-tab tab="tab-about" component="screen-about"></ion-tab>
                 <ion-tab-bar slot="bottom" id="menuTab">

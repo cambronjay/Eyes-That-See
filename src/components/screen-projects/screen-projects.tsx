@@ -12,12 +12,12 @@ export class ScreenProjects {
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private projectsObservable: Observable<any>;
     private projectsSubscription: Subscription;
-    private refresher: any;
-    private content: any;
-    private tabs: any;
-    private menuTab: any;
-    private menuNav: any;
-    private nav: any;
+    private refresher: HTMLIonRefresherElement;
+    private content: HTMLIonContentElement;
+    private tabs: HTMLIonTabsElement;
+    private menuTab: HTMLIonTabBarElement;
+    private menuNav: HTMLIonListElement;
+    private nav: HTMLIonNavElement;
 
     constructor() {
         WordPressData.loadProjects();
@@ -28,8 +28,8 @@ export class ScreenProjects {
         this.projectsSubscription = this.projectsObservable.subscribe(data => {
             this.projects = data;
         });
-        this.refresher = document.getElementById("projects-refresher");
-        this.content = document.getElementById("projects-content");
+        this.refresher = document.querySelector("#projects-refresher");
+        this.content = document.querySelector("#projects-content");
         this.refresher.addEventListener("ionRefresh", async () => {
             await Utils.wait(500);
             await WordPressData.getProjects()
@@ -71,12 +71,8 @@ export class ScreenProjects {
         this.projectsSubscription.unsubscribe();
     }
 
-    addScroll() {
-        this.content.classList.remove("disableScroll");
-    }
-
-    removeScroll() {
-        this.content.classList.add("disableScroll");
+    enableLoaders() {
+        this.refresher.disabled = false;
     }
 
     renderData() {
@@ -84,7 +80,7 @@ export class ScreenProjects {
             if (this.projects.length > 0) {
                 return (
                     <ion-list id="projectsList">
-                        {this.addScroll()}
+                        {this.enableLoaders()}
                         {this.projects.map((project) => (
                             <ion-card>
                                 <ion-card-header>
@@ -102,7 +98,6 @@ export class ScreenProjects {
             } else {
                 return (
                     <ion-list>
-                        {this.removeScroll()}
                         {this.skeleton.map(() => (
                             <ion-card>
                                 <ion-card-header>

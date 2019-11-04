@@ -12,6 +12,8 @@ export class MenuNav {
         let currentScreen = await Storage.get("CurrentScreen");
         if (currentScreen == null) {
             currentScreen = "news";
+        } else if(currentScreen.includes("story-details")){
+            currentScreen = "stories";
         }
         const firstIcon = document.querySelector(`#${currentScreen}-icon`);
         const firstText = document.querySelector(`#${currentScreen}-text`);

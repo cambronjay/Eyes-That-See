@@ -69,6 +69,18 @@ class WordPressDataController {
         }
     }
 
+    async getStory(id: number): Promise<any> {
+        if(this.stories.length === 0) {
+            const data = await this.loadStories();
+        }
+        for (const story of this.stories) {
+            if (story.id === id) {
+                return [story];
+            }
+        }
+        return null;
+    }
+
     async getProjects(): Promise<any> {
         const url = `https://us-central1-api-project-324114021707.cloudfunctions.net/getProjects`;
         try {

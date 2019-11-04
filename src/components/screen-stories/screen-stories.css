@@ -10,6 +10,3 @@
 .skeleton-30 {
     width: 30%;
 }
-.disableScroll {
-    --overflow: hidden !important;
-}

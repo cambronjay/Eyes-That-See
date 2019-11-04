@@ -17,13 +17,13 @@ export class ScreenNews {
     private twitterTimelineSubscription: Subscription;
     public players: any;
     public player: any;
-    private refresher: any;
-    private infiniteScroll: any;
-    private content: any;
-    private tabs: any;
-    private menuTab: any;
-    private menuNav: any;
-    private nav: any;
+    private refresher: HTMLIonRefresherElement;
+    private infiniteScroll: HTMLIonInfiniteScrollElement;
+    private content: HTMLIonContentElement;
+    private tabs: HTMLIonTabsElement;
+    private menuTab: HTMLIonTabBarElement;
+    private menuNav: HTMLIonListElement;
+    private nav: HTMLIonNavElement;
 
     constructor() {
         SocialData.loadTimeline();
@@ -34,8 +34,8 @@ export class ScreenNews {
         this.twitterTimelineSubscription = this.twitterTimelineObservable.subscribe(data => {
             this.tweets = data;
         });
-        this.refresher = document.getElementById("news-refresher");
-        this.content = document.getElementById("news-content");
+        this.refresher = document.querySelector("#news-refresher");
+        this.content = document.querySelector("#news-content");
         this.refresher.addEventListener("ionRefresh", async () => {
             await Utils.wait(500);
             await SocialData.getTwitterTimeline({ count: '5', query: 'since_id=' + this.tweets[0].id_str }, true, false)
@@ -46,7 +46,7 @@ export class ScreenNews {
                     this.refresher.complete();
                 });
         });
-        this.infiniteScroll = document.getElementById('news-infinite-scroll');
+        this.infiniteScroll = document.querySelector('#news-infinite-scroll');
         this.infiniteScroll.addEventListener('ionInfinite', async () => {
             await Utils.wait(500);
             await SocialData.getTwitterTimeline({ count: '5', query: 'max_id=' + this.tweets[this.tweets.length - 1].id_str }, false, true)
@@ -94,6 +94,7 @@ export class ScreenNews {
 
     async playVideo(e, url: string) {
         e.preventDefault();
+        e.stopPropagation();
         let videoPlayer: any;
         videoPlayer = CapacitorVideoPlayer;
         this.player = await videoPlayer.play({ url: url });
@@ -197,12 +198,9 @@ export class ScreenNews {
         }
     }
 
-    addScroll() {
-        this.content.classList.remove("disableScroll");
-    }
-
-    removeScroll() {
-        this.content.classList.add("disableScroll");
+    enableLoaders() {
+        this.refresher.disabled = false;
+        this.infiniteScroll.disabled = false;
     }
 
     renderData() {
@@ -210,7 +208,7 @@ export class ScreenNews {
             if (this.tweets.length > 0) {
                 return (
                     <ion-list id="newsList">
-                        {this.addScroll()}
+                        {this.enableLoaders()}
                         {this.tweets.map((tweet) => (
                             <ion-card>
                                 {this.renderReTweet(tweet)}
@@ -248,7 +246,6 @@ export class ScreenNews {
             } else {
                 return (
                     <ion-list>
-                        {this.removeScroll()}
                         {this.skeleton.map(() => (
                             <ion-card>
                                 <ion-item lines="none">
