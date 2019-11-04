@@ -2,22 +2,17 @@ import { Component, h, State } from '@stencil/core';
 import { WordPressData } from "../../providers/wordpress-data";
 import { Utils } from "../../providers/utils";
 import { Observable, Subscription } from "rxjs";
-import { Plugins } from '@capacitor/core';
-import { isPlatform } from '@ionic/core';
-import Plyr from "plyr";
-const { CapacitorVideoPlayer } = Plugins;
 
 @Component({
-    tag: 'screen-stores',
+    tag: 'screen-stories',
     styleUrl: 'screen-stories.css',
 })
+
 export class ScreenStories {
     @State() stories: any;
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private storiesObservable: Observable<any>;
     private storiesSubscription: Subscription;
-    public players: any;
-    public player: any;
     private refresher: any;
     private infiniteScroll: any;
     private content: any;
@@ -25,13 +20,10 @@ export class ScreenStories {
     private menuTab: any;
     private menuNav: any;
     private nav: any;
+
     constructor() {
         WordPressData.loadStories();
         this.storiesObservable = WordPressData.storiesSubject;
-    }
-
-    componentWillLoad() {
-
     }
 
     async componentDidLoad() {
@@ -61,14 +53,14 @@ export class ScreenStories {
                     this.infiniteScroll.complete();
                 });
         });
-        if (!isPlatform(window, "ipad") && !isPlatform(window, "tablet") && !isPlatform(window, "desktop")) {
+        if (Utils.isSmallScreen()) {
             this.tabs = document.querySelector("ion-tabs");
             this.menuTab = document.querySelector("#menuTab");
             this.menuTab.addEventListener("click", (event) => {
                 event.preventDefault();
                 event.stopPropagation();
                 this.tabs.getSelected().then((data) => {
-                    if (data == "tab-news") {
+                    if (data == "tab-stories") {
                         this.content.scrollToTop(500);
                     }
                 });
@@ -80,7 +72,7 @@ export class ScreenStories {
                 event.preventDefault();
                 event.stopPropagation();
                 this.nav.getActive().then((data) => {
-                    if (data.component == "screen-news") {
+                    if (data.component == "screen-stories") {
                         this.content.scrollToTop(500);
                     }
                 });
@@ -88,189 +80,77 @@ export class ScreenStories {
         }
     }
 
-    componentDidRender() {
-        this.players = Plyr.setup('.js-player', { captions: { active: false } });
-    }
-
     componentDidUnload() {
         this.storiesSubscription.unsubscribe();
     }
 
-    async playVideo(e, url: string) {
-        e.preventDefault();
-        let videoPlayer: any;
-        videoPlayer = CapacitorVideoPlayer;
-        this.player = await videoPlayer.play({ url: url });
-    }
-
-    renderVideo(media: any) {
-        if (isPlatform(window, "ios") || isPlatform(window, "android")) {
-            return (
-                <div style={{ 'position': 'relative' }} onClick={(e) => this.playVideo(e, media.video_info.variants[2].url)}>
-                    <div class="play-button"><ion-icon name="play-circle" color="primary" class="play-button-icon"></ion-icon></div>
-                    <ion-img class="img-container" src={media.media_url_https}></ion-img>
-                </div>
-            )
+    renderAvatar(story) {
+        if (story.thumbnail_images) {
+            return (<ion-img src={story.thumbnail_images.large.url}></ion-img>)
         } else {
-            return (<video class='js-player video-player' controls playsinline poster={media.media_url_https}>
-                <source src={media.video_info.variants[2].url} type="video/mp4"></source>
-            </video>)
-        }
-    }
-
-    renderMediaColumns(tweet, media) {
-        if (media.type == "video") {
-            return <ion-col size="12" class="ion-no-padding">
-                {this.renderVideo(media)}
-            </ion-col>;
-        } else {
-            if (tweet.length == 1) {
-                return <ion-col size="12" class="ion-no-padding">
-                    <ion-img src={media.media_url_https}></ion-img>
-                </ion-col>;
+            if (story.attachments) {
+                if (story.attachments.length > 0) {
+                    return (<ion-img src={story.attachments[0].images.large.url}></ion-img>)
+                } else {
+                    return (<ion-img src="assets/img/thumbnail.png"></ion-img>)
+                }
             } else {
-                return <ion-col size="6">
-                    <ion-img style={{
-                        'border-radius': '8px'
-                    }} class="img-container" src={media.media_url_https}></ion-img>
-                </ion-col>;
+                return (<ion-img src="assets/img/thumbnail.png"></ion-img>)
             }
         }
     }
 
-    renderMedia(tweet) {
-        let tweetType = tweet;
-        if (tweet.retweeted_status) {
-            tweetType = tweet.retweeted_status;
-        }
-        if (tweetType.entities.media) {
-            if (tweetType.extended_entities.media.length > 0) {
-                return (
-                    <ion-grid class="ion-no-padding">
-                        <ion-row class="ion-no-padding">
-                            {tweetType.extended_entities.media.map((media) => (
-                                this.renderMediaColumns(tweetType.extended_entities.media, media)
-                            ))}
-                        </ion-row>
-                    </ion-grid>
-                )
-            }
-        }
+    renderItem(item: any, index: number) {
+        return (<ion-item>
+            <ion-avatar slot="start">
+                {this.renderAvatar(item)}
+            </ion-avatar>
+            <ion-label>
+                <h2 innerHTML={item.title}></h2>
+                <h3 innerHTML={Utils.formatDate(item.date)}></h3>
+                <p innerHTML={item.excerpt}></p>
+            </ion-label>
+        </ion-item>)
     }
 
-    renderQuotedTweet(tweet) {
-        if (tweet.quoted_status) {
-            return (<ion-card style={{
-                'margin-top': '0px'
-            }}>
-                {this.renderReTweet(tweet.quoted_status)}
-                <ion-item lines="none">
-                    <ion-avatar slot="start">
-                        {tweet.quoted_status.retweeted_status
-                            ? <ion-img src={tweet.quoted_status.retweeted_status.user.profile_image_url_https}></ion-img>
-                            : <ion-img src={tweet.quoted_status.user.profile_image_url_https}></ion-img>
-                        }
-                    </ion-avatar>
-                    <ion-label>
-                        {tweet.quoted_status.retweeted_status
-                            ? <h2 innerHTML={tweet.quoted_status.retweeted_status.user.name}></h2>
-                            : <h2 innerHTML={tweet.quoted_status.user.name}></h2>
-                        }
-                        {tweet.quoted_status.retweeted_status
-                            ? <p innerHTML={'@' + tweet.quoted_status.retweeted_status.user.screen_name + ' &bull; ' + Utils.formatDate(tweet.quoted_status.retweeted_status.created_at)}></p>
-                            : <p innerHTML={'@' + tweet.quoted_status.user.screen_name + ' &bull; ' + Utils.formatDate(tweet.quoted_status.created_at)}></p>
-                        }
-                    </ion-label>
-                </ion-item>
-                <ion-card-content>
-                    {Utils.formatTweets(tweet.quoted_status.full_text)}
-                </ion-card-content>
-                {this.renderMedia(tweet.quoted_status)}
-            </ion-card>)
-        }
+    addScroll() {
+        this.content.classList.remove("disableScroll");
     }
 
-    renderReTweet(tweet) {
-        if (tweet.retweeted_status) {
-            return (<ion-item lines="none">
-                <ion-icon name="sync" size="small"></ion-icon>
-                <ion-label class="ion-no-padding ion-no-margin">
-                    <p innerHTML={tweet.user.name + ' Retweeted'} style={{ 'padding-left': '10px' }}></p>
-                </ion-label>
-            </ion-item>)
-        }
+    removeScroll() {
+        this.content.classList.add("disableScroll");
     }
 
     renderData() {
         if (this.stories != null) {
             if (this.stories.length > 0) {
                 return (
-                    <ion-list id="newsList">
-                        {this.stories.map((tweet) => (
-                            <ion-card>
-                                {this.renderReTweet(tweet)}
-                                <ion-item lines="none">
-                                    <ion-avatar slot="start">
-                                        {tweet.retweeted_status
-                                            ? <ion-img src={tweet.retweeted_status.user.profile_image_url_https}></ion-img>
-                                            : <ion-img src={tweet.user.profile_image_url_https}></ion-img>
-                                        }
-                                    </ion-avatar>
-                                    <ion-label>
-                                        {tweet.retweeted_status
-                                            ? <h2 innerHTML={tweet.retweeted_status.user.name}></h2>
-                                            : <h2 innerHTML={tweet.user.name}></h2>
-                                        }
-                                        {tweet.retweeted_status
-                                            ? <p innerHTML={'@' + tweet.retweeted_status.user.screen_name + ' &bull; ' + Utils.formatDate(tweet.retweeted_status.created_at)}></p>
-                                            : <p innerHTML={'@' + tweet.user.screen_name + ' &bull; ' + Utils.formatDate(tweet.created_at)}></p>
-                                        }
-                                        <p></p>
-                                    </ion-label>
-                                </ion-item>
-                                <ion-card-content>
-                                    {tweet.retweeted_status
-                                        ? Utils.formatTweets(tweet.retweeted_status.full_text)
-                                        : Utils.formatTweets(tweet.full_text)
-                                    }
-                                </ion-card-content>
-                                {this.renderMedia(tweet)}
-                                {this.renderQuotedTweet(tweet)}
-                            </ion-card>
-                        ))}
+                    <ion-list id="storiesList">
+                        {this.addScroll()}
+                        <ion-virtual-scroll items={this.stories} renderItem={(item, index) => this.renderItem(item, index)} itemHeight={() => 87}></ion-virtual-scroll>
                     </ion-list>
                 )
             } else {
                 return (
                     <ion-list>
+                        {this.removeScroll()}
                         {this.skeleton.map(() => (
-                            <ion-card>
-                                <ion-item lines="none">
-                                    <ion-avatar slot="start">
-                                        <ion-skeleton-text animated></ion-skeleton-text>
-                                    </ion-avatar>
-                                    <ion-label>
-                                        <h3>
-                                            <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
-                                        </h3>
-                                        <h3>
-                                            <ion-skeleton-text animated class="skeleton-50"></ion-skeleton-text>
-                                        </h3>
-                                    </ion-label>
-                                </ion-item>
-                                <ion-card-content>
-                                    <ion-thumbnail class="skeleton-card-image" slot="start">
-                                        <ion-skeleton-text animated></ion-skeleton-text>
-                                    </ion-thumbnail>
-                                    <ion-item lines="none" text-left>
-                                        <ion-label>
-                                            <ion-skeleton-text animated class="skeleton-100"></ion-skeleton-text>
-                                            <ion-skeleton-text animated class="skeleton-70"></ion-skeleton-text>
-                                            <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
-                                        </ion-label>
-                                    </ion-item>
-                                </ion-card-content>
-                            </ion-card>
+                            <ion-item lines="none">
+                                <ion-avatar slot="start">
+                                    <ion-skeleton-text animated></ion-skeleton-text>
+                                </ion-avatar>
+                                <ion-label>
+                                    <h2>
+                                        <ion-skeleton-text animated class="skeleton-50"></ion-skeleton-text>
+                                    </h2>
+                                    <h3>
+                                        <ion-skeleton-text animated class="skeleton-30"></ion-skeleton-text>
+                                    </h3>
+                                    <p>
+                                        <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
+                                    </p>
+                                </ion-label>
+                            </ion-item>
                         ))}
                     </ion-list>
                 )
@@ -303,13 +183,7 @@ export class ScreenStories {
                     <ion-refresher-content pulling-icon="arrow-down" refreshing-spinner="crescent">
                     </ion-refresher-content>
                 </ion-refresher>
-                <ion-grid>
-                    <ion-row justify-content-center align-items-center class="center-row">
-                        <ion-col sizeMd="11" sizeLg="10" sizeXl="8">
-                            {this.renderData()}
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
+                {this.renderData()}
                 <ion-infinite-scroll id="stories-infinite-scroll">
                     <ion-infinite-scroll-content loading-spinner="crescent">
                     </ion-infinite-scroll-content>

@@ -1,4 +1,5 @@
-import * as moment from 'moment';
+import moment from 'moment';
+import { isPlatform } from '@ionic/core';
 
 class UtilsController {
 
@@ -18,7 +19,19 @@ class UtilsController {
     }
 
     public formatDate(date: string) {
-        return moment.default(new Date(date).toISOString()).format('l');
+        return moment(new Date(date).toISOString()).format('l');
+    }
+
+    public isSmallScreen(): boolean {
+        return (!isPlatform(window, "ipad") && !isPlatform(window, "tablet") && !isPlatform(window, "desktop")) ? true : false;
+    }
+
+    public isLargeScreen(): boolean {
+        return (isPlatform(window, "ipad") || isPlatform(window, "tablet") || isPlatform(window, "desktop")) ? true : false;
+    }
+
+    public isDevice(): boolean {
+        return (isPlatform(window, "ios") || isPlatform(window, "android") || isPlatform(window, "capacitor") || isPlatform(window, "cordova")) ? true : false;
     }
 
     public formatTweets(tweet: string) {

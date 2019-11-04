@@ -3,7 +3,6 @@ import { SocialData } from "../../providers/social-data";
 import { Utils } from "../../providers/utils";
 import { Observable, Subscription } from "rxjs";
 import { Plugins } from '@capacitor/core';
-import { isPlatform } from '@ionic/core';
 import Plyr from "plyr";
 const { CapacitorVideoPlayer } = Plugins;
 
@@ -25,13 +24,10 @@ export class ScreenNews {
     private menuTab: any;
     private menuNav: any;
     private nav: any;
+
     constructor() {
         SocialData.loadTimeline();
         this.twitterTimelineObservable = SocialData.twitterTimelineSubject;
-    }
-
-    componentWillLoad() {
-
     }
 
     async componentDidLoad() {
@@ -61,7 +57,7 @@ export class ScreenNews {
                     this.infiniteScroll.complete();
                 });
         });
-        if (!isPlatform(window, "ipad") && !isPlatform(window, "tablet") && !isPlatform(window, "desktop")) {
+        if (Utils.isSmallScreen()) {
             this.tabs = document.querySelector("ion-tabs");
             this.menuTab = document.querySelector("#menuTab");
             this.menuTab.addEventListener("click", (event) => {
@@ -104,7 +100,7 @@ export class ScreenNews {
     }
 
     renderVideo(media: any) {
-        if (isPlatform(window, "ios") || isPlatform(window, "android")) {
+        if (Utils.isDevice()) {
             return (
                 <div style={{ 'position': 'relative' }} onClick={(e) => this.playVideo(e, media.video_info.variants[2].url)}>
                     <div class="play-button"><ion-icon name="play-circle" color="primary" class="play-button-icon"></ion-icon></div>
@@ -201,11 +197,20 @@ export class ScreenNews {
         }
     }
 
+    addScroll() {
+        this.content.classList.remove("disableScroll");
+    }
+
+    removeScroll() {
+        this.content.classList.add("disableScroll");
+    }
+
     renderData() {
         if (this.tweets != null) {
             if (this.tweets.length > 0) {
                 return (
                     <ion-list id="newsList">
+                        {this.addScroll()}
                         {this.tweets.map((tweet) => (
                             <ion-card>
                                 {this.renderReTweet(tweet)}
@@ -243,6 +248,7 @@ export class ScreenNews {
             } else {
                 return (
                     <ion-list>
+                        {this.removeScroll()}
                         {this.skeleton.map(() => (
                             <ion-card>
                                 <ion-item lines="none">

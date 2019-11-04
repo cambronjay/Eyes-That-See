@@ -1,8 +1,9 @@
 import '@ionic/core';
 import { Component, State, h } from '@stencil/core';
-import { Plugins } from '@capacitor/core';
-import { isPlatform } from '@ionic/core';
-const { SplashScreen } = Plugins;
+import { Plugins, HapticsImpactStyle } from '@capacitor/core';
+import { Utils } from '../../providers/utils';
+import { Storage } from "../../providers/storage";
+const { SplashScreen, Haptics } = Plugins;
 
 @Component({
   tag: 'app-root',
@@ -10,57 +11,72 @@ const { SplashScreen } = Plugins;
 })
 export class AppRoot {
   @State() isLargeScreen = false;
-  private menuNav: any;
-  private nav: any;
-  
+  private router: any;
+  private startScreen: any;
   appPages = [
     {
       title: 'News',
       url: '/news',
       icon: 'today',
-      id: 'screen-news'
+      id: 'news'
     },
     {
       title: 'Stories',
       url: '/stories',
       icon: 'book',
-      id: 'screen-stories'
+      id: 'stories'
     },
     {
       title: 'Projects',
       url: '/projects',
       icon: 'list-box',
-      id: 'screen-projects'
+      id: 'projects'
     },
     {
       title: 'About',
       url: '/about',
       icon: 'people',
-      id: 'screen-about'
+      id: 'about'
     }
   ];
 
   async componentWillLoad() {
-    this.isLargeScreen = isPlatform(window, "ipad") || isPlatform(window, "tablet") || isPlatform(window, "desktop") ? true : false;
+    this.isLargeScreen = Utils.isLargeScreen();
+    this.startScreen = await Storage.get("CurrentScreen");
+    if (this.startScreen == null) {
+      this.startScreen = "/news";
+    } else {
+      this.startScreen = "/" + this.startScreen;
+    }
   }
 
   async componentDidLoad() {
-    if (isPlatform(window, "ipad") || isPlatform(window, "tablet") || isPlatform(window, "desktop")) {
-      this.nav = document.querySelector("ion-router");
-      //this.menuNav = document.querySelector("#menuNav");
-      this.nav.addEventListener("ionRouteDidChange", (event) => {
-        console.log(event)
-          event.preventDefault();
-          event.stopPropagation();
-          // this.nav.getActive().then((data) => {
-          //   console.log(data)
-          //   let activeNavIcon = document.querySelector(`#${data.component}-icon`);
-          //   let activeNavText = document.querySelector(`#${data.component}-text`);
-          //   activeNavIcon.setAttribute("color", "primary");
-          //   activeNavText.setAttribute("color", "primary");
-          // });
-      });
-    }
+    this.router = document.querySelector("#ionicRouter");
+    this.router.addEventListener("ionRouteWillChange", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (Utils.isDevice()) {
+        Haptics.impact({
+          style: HapticsImpactStyle.Medium
+        });
+      }
+      if (this.isLargeScreen) {
+        let toNavIcon = event.detail.to.replace("/", "");
+        let toNavText = event.detail.to.replace("/", "");
+        toNavIcon = document.querySelector(`#${toNavIcon}-icon`);
+        toNavText = document.querySelector(`#${toNavText}-text`);
+        toNavIcon.setAttribute("color", "primary");
+        toNavText.setAttribute("color", "primary");
+        let fromNavIcon = event.detail.from.replace("/", "");
+        let fromNavText = event.detail.from.replace("/", "");
+        fromNavIcon = document.querySelector(`#${fromNavIcon}-icon`);
+        fromNavText = document.querySelector(`#${fromNavText}-text`);
+        fromNavIcon.setAttribute("color", "medium");
+        fromNavText.setAttribute("color", "medium");
+      }
+      let currentScreen = event.detail.to.replace("/", "");
+      await Storage.set("CurrentScreen", currentScreen);
+    });
     try {
       await SplashScreen.hide();
     } catch {
@@ -71,8 +87,8 @@ export class AppRoot {
   renderRouter() {
     if (!this.isLargeScreen) {
       return (
-        <ion-router useHash={false}>
-          {/* <ion-route-redirect from="/" to='/news' /> */}
+        <ion-router useHash={false} id="ionicRouter">
+          <ion-route-redirect from="/" to={this.startScreen}></ion-route-redirect>
           <ion-route component="menu-tabs">
             <ion-route url="/news" component="tab-news"></ion-route>
             <ion-route url="/stories" component="tab-stories"></ion-route>
@@ -83,8 +99,8 @@ export class AppRoot {
       )
     } else {
       return (
-        <ion-router useHash={false}>
-          {/* <ion-route-redirect from="/" to='/news' /> */}
+        <ion-router useHash={false} id="ionicRouter">
+          <ion-route-redirect from="/" to={this.startScreen}></ion-route-redirect>
           <ion-route component="menu-nav">
             <ion-route url="/news" component="screen-news"></ion-route>
             <ion-route url="/stories" component="screen-stories"></ion-route>

@@ -1,5 +1,5 @@
 import { Plugins } from "@capacitor/core";
-import { isPlatform } from '@ionic/core';
+import { Utils } from '../providers/utils';
 import * as CapacitorSQLPlugin from 'capacitor-data-storage-sqlite';
 const { CapacitorDataStorageSqlite } = Plugins;
 
@@ -8,7 +8,7 @@ class StorageController {
     private storage: any = {};
 
     constructor() {
-        if (isPlatform(window, "ios") || isPlatform(window, "android") || isPlatform(window, "capacitor") || isPlatform(window, "cordova")) {
+        if (Utils.isDevice) {
             this.storage = CapacitorDataStorageSqlite;
         } else {
             this.storage = CapacitorSQLPlugin.CapacitorDataStorageSqlite;

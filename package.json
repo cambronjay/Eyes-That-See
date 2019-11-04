@@ -6,8 +6,8 @@
     "scripts": {
         "buildWeb": "stencil build --prerender",
         "buldNativeStart": "stencil build",
-        "buildNative": "stencil build --prerender && npm run updateNative && npm run openXcodeProject",
-        "buildAssetsOnly": "stencil build --prerender && npm run updateNativeWebAssets",
+        "buildNative": "npm run updateNative && npm run openXcodeProject",
+        "buildAssetsOnly": "stencil build && npm run updateNativeWebAssets",
         "updateNativeWebAssets": "npx cap copy",
         "updateNative": "npx cap sync",
         "start": "stencil build --dev --watch --serve",

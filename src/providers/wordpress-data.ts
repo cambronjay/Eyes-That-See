@@ -7,7 +7,7 @@ class WordPressDataController {
     private stories: any = [];
     public projectsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
     private projects: any = [];
-    
+
     constructor() { }
 
     async loadStories(): Promise<any> {
@@ -17,7 +17,7 @@ class WordPressDataController {
                 this.stories = storedData;
                 this.storiesSubject.next(storedData);
             } else {
-                this.getStories({ count: '5', offset: '0' }, false);
+                this.getStories({ count: '15', offset: '0' }, false);
             }
         } else {
             this.storiesSubject.next(this.stories);
@@ -49,9 +49,9 @@ class WordPressDataController {
             } else {
                 let json = await response.json();
                 if (isInfinite) {
-                    this.stories = this.stories.concat(json);
+                    this.stories = this.stories.concat(json.posts);
                 } else {
-                    this.stories = json;
+                    this.stories = json.posts;
                 }
                 this.storiesSubject.next(this.stories);
                 await Storage.set("ScreenStories", this.stories);

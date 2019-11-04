@@ -1,11 +1,140 @@
-import { Component, h } from '@stencil/core';
+import { Component, h, State } from '@stencil/core';
+import { WordPressData } from "../../providers/wordpress-data";
+import { Utils } from "../../providers/utils";
+import { Observable, Subscription } from "rxjs";
 
 @Component({
     tag: 'screen-projects',
     styleUrl: 'screen-projects.css',
 })
 export class ScreenProjects {
-    skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    @State() projects: any;
+    public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    private projectsObservable: Observable<any>;
+    private projectsSubscription: Subscription;
+    private refresher: any;
+    private content: any;
+    private tabs: any;
+    private menuTab: any;
+    private menuNav: any;
+    private nav: any;
+
+    constructor() {
+        WordPressData.loadProjects();
+        this.projectsObservable = WordPressData.projectsSubject;
+    }
+
+    async componentDidLoad() {
+        this.projectsSubscription = this.projectsObservable.subscribe(data => {
+            this.projects = data;
+        });
+        this.refresher = document.getElementById("projects-refresher");
+        this.content = document.getElementById("projects-content");
+        this.refresher.addEventListener("ionRefresh", async () => {
+            await Utils.wait(500);
+            await WordPressData.getProjects()
+                .then(() => {
+                    this.refresher.complete();
+                })
+                .catch(() => {
+                    this.refresher.complete();
+                });
+        });
+        if (Utils.isSmallScreen()) {
+            this.tabs = document.querySelector("ion-tabs");
+            this.menuTab = document.querySelector("#menuTab");
+            this.menuTab.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.tabs.getSelected().then((data) => {
+                    if (data == "tab-projects") {
+                        this.content.scrollToTop(500);
+                    }
+                });
+            });
+        } else {
+            this.nav = document.querySelector("ion-nav");
+            this.menuNav = document.querySelector("#menuNav");
+            this.menuNav.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.nav.getActive().then((data) => {
+                    if (data.component == "screen-projects") {
+                        this.content.scrollToTop(500);
+                    }
+                });
+            });
+        }
+    }
+
+    componentDidUnload() {
+        this.projectsSubscription.unsubscribe();
+    }
+
+    addScroll() {
+        this.content.classList.remove("disableScroll");
+    }
+
+    removeScroll() {
+        this.content.classList.add("disableScroll");
+    }
+
+    renderData() {
+        if (this.projects != null) {
+            if (this.projects.length > 0) {
+                return (
+                    <ion-list id="projectsList">
+                        {this.addScroll()}
+                        {this.projects.map((project) => (
+                            <ion-card>
+                                <ion-card-header>
+                                    <ion-card-title innerHTML={project.name}></ion-card-title>
+                                </ion-card-header>
+                                <ion-card-content innerHTML={project.description}></ion-card-content>
+                                <ion-item href="#">
+                                    <ion-icon name="wifi" slot="start"></ion-icon>
+                                    <ion-label>Card Link Item 1 .activated</ion-label>
+                                </ion-item>
+                            </ion-card>
+                        ))}
+                    </ion-list>
+                )
+            } else {
+                return (
+                    <ion-list>
+                        {this.removeScroll()}
+                        {this.skeleton.map(() => (
+                            <ion-card>
+                                <ion-card-header>
+                                    <ion-skeleton-text animated class="skeleton-50"></ion-skeleton-text>
+                                </ion-card-header>
+                                <ion-card-content>
+                                    <ion-item lines="none" text-left>
+                                        <ion-label>
+                                            <ion-skeleton-text animated class="skeleton-100"></ion-skeleton-text>
+                                            <ion-skeleton-text animated class="skeleton-70"></ion-skeleton-text>
+                                            <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
+                                        </ion-label>
+                                    </ion-item>
+                                </ion-card-content>
+                            </ion-card>
+                        ))}
+                    </ion-list>
+                )
+            }
+        } else {
+            return (
+                <ion-item lines="none" text-left>
+                    <ion-label>
+                        <h3>
+                            There seems to be a problem with your connection. Pull down to refresh!
+                        </h3>
+                    </ion-label>
+                </ion-item>
+            )
+        }
+    }
+
     render() {
         return [
             <ion-header>
@@ -16,40 +145,15 @@ export class ScreenProjects {
                 </ion-toolbar>
             </ion-header>,
 
-            <ion-content>
+            <ion-content id="projects-content">
+                <ion-refresher slot="fixed" id="projects-refresher">
+                    <ion-refresher-content pulling-icon="arrow-down" refreshing-spinner="crescent">
+                    </ion-refresher-content>
+                </ion-refresher>
                 <ion-grid>
                     <ion-row justify-content-center align-items-center class="center-row">
                         <ion-col sizeMd="11" sizeLg="10" sizeXl="8">
-                            <div id="skeleton">
-                                <ion-list>
-                                    {this.skeleton.map(() => (
-                                        <ion-card>
-                                            <ion-item lines="none">
-                                                <ion-avatar slot="start">
-                                                    <ion-skeleton-text animated></ion-skeleton-text>
-                                                </ion-avatar>
-                                                <ion-label>
-                                                    <h3>
-                                                        <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
-                                                    </h3>
-                                                </ion-label>
-                                            </ion-item>
-                                            <ion-card-content>
-                                                <ion-thumbnail class="skeleton-card-image" slot="start">
-                                                    <ion-skeleton-text animated></ion-skeleton-text>
-                                                </ion-thumbnail>
-                                                <ion-item lines="none" text-left>
-                                                    <ion-label>
-                                                        <ion-skeleton-text animated class="skeleton-100"></ion-skeleton-text>
-                                                        <ion-skeleton-text animated class="skeleton-70"></ion-skeleton-text>
-                                                        <ion-skeleton-text animated class="skeleton-80"></ion-skeleton-text>
-                                                    </ion-label>
-                                                </ion-item>
-                                            </ion-card-content>
-                                        </ion-card>
-                                    ))}
-                                </ion-list>
-                            </div>
+                            {this.renderData()}
                         </ion-col>
                     </ion-row>
                 </ion-grid>

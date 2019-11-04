@@ -16,7 +16,7 @@ export namespace Components {
   interface ScreenAbout {}
   interface ScreenNews {}
   interface ScreenProjects {}
-  interface ScreenStores {}
+  interface ScreenStories {}
 }
 
 declare global {
@@ -58,10 +58,10 @@ declare global {
     new (): HTMLScreenProjectsElement;
   };
 
-  interface HTMLScreenStoresElement extends Components.ScreenStores, HTMLStencilElement {}
-  var HTMLScreenStoresElement: {
-    prototype: HTMLScreenStoresElement;
-    new (): HTMLScreenStoresElement;
+  interface HTMLScreenStoriesElement extends Components.ScreenStories, HTMLStencilElement {}
+  var HTMLScreenStoriesElement: {
+    prototype: HTMLScreenStoriesElement;
+    new (): HTMLScreenStoriesElement;
   };
   interface HTMLElementTagNameMap {
     'app-root': HTMLAppRootElement;
@@ -70,7 +70,7 @@ declare global {
     'screen-about': HTMLScreenAboutElement;
     'screen-news': HTMLScreenNewsElement;
     'screen-projects': HTMLScreenProjectsElement;
-    'screen-stores': HTMLScreenStoresElement;
+    'screen-stories': HTMLScreenStoriesElement;
   }
 }
 
@@ -81,7 +81,7 @@ declare namespace LocalJSX {
   interface ScreenAbout {}
   interface ScreenNews {}
   interface ScreenProjects {}
-  interface ScreenStores {}
+  interface ScreenStories {}
 
   interface IntrinsicElements {
     'app-root': AppRoot;
@@ -90,7 +90,7 @@ declare namespace LocalJSX {
     'screen-about': ScreenAbout;
     'screen-news': ScreenNews;
     'screen-projects': ScreenProjects;
-    'screen-stores': ScreenStores;
+    'screen-stories': ScreenStories;
   }
 }
 
@@ -106,7 +106,7 @@ declare module "@stencil/core" {
       'screen-about': LocalJSX.ScreenAbout & JSXBase.HTMLAttributes<HTMLScreenAboutElement>;
       'screen-news': LocalJSX.ScreenNews & JSXBase.HTMLAttributes<HTMLScreenNewsElement>;
       'screen-projects': LocalJSX.ScreenProjects & JSXBase.HTMLAttributes<HTMLScreenProjectsElement>;
-      'screen-stores': LocalJSX.ScreenStores & JSXBase.HTMLAttributes<HTMLScreenStoresElement>;
+      'screen-stories': LocalJSX.ScreenStories & JSXBase.HTMLAttributes<HTMLScreenStoriesElement>;
     }
   }
 }

@@ -13,9 +13,8 @@
 .skeleton-70 {
     width: 70%;
 }
-ion-thumbnail.skeleton-card-image {
-    width: 100% !important;
-    height: 300px !important;
+.disableScroll {
+    --overflow: hidden !important;
 }
 .center-row { 
     align-items: center !important;

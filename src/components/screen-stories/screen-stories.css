@@ -1,12 +1,15 @@
 .logo {
  max-height: 35px;
 }
-.skeleton-30 {
-    width: 30%;
+.skeleton-50 {
+    width: 50%;
 }
 .skeleton-80 {
     width: 80%;
 }
-.skeleton-60 {
-    width: 60%;
+.skeleton-30 {
+    width: 30%;
+}
+.disableScroll {
+    --overflow: hidden !important;
 }
