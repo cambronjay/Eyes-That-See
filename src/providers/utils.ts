@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { format } from 'date-fns'
 import { isPlatform } from '@ionic/core';
 
 class UtilsController {
@@ -19,7 +19,12 @@ class UtilsController {
     }
 
     public formatDate(date: string) {
-        return moment(new Date(date).toISOString()).format('l');
+        try {
+            return format(new Date(date), 'MM/dd/yyyy');
+        } catch(error) {
+            return '';
+        }
+        
     }
 
     public isSmallScreen(): boolean {

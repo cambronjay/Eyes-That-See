@@ -46,7 +46,7 @@ export class ScreenStoryDetails {
                             <ion-card>
                                 {this.renderMedia(story)}
                                 <ion-card-header>
-                                    <ion-card-subtitle innerHTML={story.author.first_name + ' ' + story.author.last_name + ' &bull; ' + Utils.formatDate(story.date)}></ion-card-subtitle>
+                                    <ion-card-subtitle innerHTML={story.author.first_name + ' ' + story.author.last_name}></ion-card-subtitle>
                                     <ion-card-title innerHTML={story.title}></ion-card-title>
                                 </ion-card-header>
                                 <ion-card-content innerHTML={Utils.formatDescription(story.content)}></ion-card-content>

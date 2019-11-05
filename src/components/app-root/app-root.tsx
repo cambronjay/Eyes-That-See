@@ -11,9 +11,11 @@ const { SplashScreen, Haptics } = Plugins;
 })
 export class AppRoot {
   @State() isLargeScreen = false;
-  private router: any;
+  private router: HTMLIonRouterElement;
   private startScreen: any;
-  private nav: any;
+  private tabBar: HTMLIonTabBarElement;
+  private navItem: HTMLIonItemElement;
+  private nav: HTMLIonNavElement;
   appPages = [
     {
       title: 'News',
@@ -52,15 +54,41 @@ export class AppRoot {
   }
 
   async componentDidLoad() {
+    if (Utils.isSmallScreen()) {
+      this.tabBar = document.querySelector("#menuTab");
+      this.tabBar.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (Utils.isDevice()) {
+          try {
+            Haptics.impact({
+              style: HapticsImpactStyle.Medium
+            });
+          } catch(error){
+
+          }
+        }
+      });
+    } else {
+      this.navItem = document.querySelector("#menuItem");
+      this.navItem.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (Utils.isDevice()) {
+          try {
+            Haptics.impact({
+              style: HapticsImpactStyle.Medium
+            });
+          } catch(error){
+
+          }
+        }
+      });
+    }
     this.router = document.querySelector("#ionicRouter");
-    this.router.addEventListener("ionRouteWillChange", async (event) => {
+    this.router.addEventListener("ionRouteWillChange", async (event: any) => {
       event.preventDefault();
       event.stopPropagation();
-      if (Utils.isDevice()) {
-        Haptics.impact({
-          style: HapticsImpactStyle.Heavy
-        });
-      }
       let currentScreen;
       if (event.detail.to.includes("story-details")) {
         currentScreen = "/stories";
@@ -99,17 +127,19 @@ export class AppRoot {
           fromNavIcon.setAttribute("color", "medium");
           fromNavText.setAttribute("color", "medium");
         }
+        let start = this.startScreen.replace("/", "");
+        this.nav = document.querySelector("#sideMenuNav");
+        this.nav.setRoot("screen-" + start);
       }
       currentScreen = currentScreen.replace("/", "");
       await Storage.set("CurrentScreen", currentScreen);
     });
-    let start = this.startScreen.replace("/", "");
-    this.nav = document.querySelector("#sideMenuNav");
-    this.nav.setRoot("screen-" + start);
-    try {
-      await SplashScreen.hide();
-    } catch {
-      return;
+    if (Utils.isDevice()) {
+      try {
+        await SplashScreen.hide();
+      } catch (error) {
+        return;
+      }
     }
   }
 
@@ -144,7 +174,7 @@ export class AppRoot {
             <ion-content forceOverscroll={false}>
               <ion-list id="menuNav">
                 {this.appPages.map((p) => (
-                  <ion-menu-toggle autoHide={false}>
+                  <ion-menu-toggle autoHide={false} id="menuItem">
                     <ion-item href={p.url} detail={false}>
                       <ion-icon slot="start" name={p.icon} id={p.id + '-icon'} color="medium"></ion-icon>
                       <ion-label id={p.id + '-text'} color="medium">{p.title}</ion-label>

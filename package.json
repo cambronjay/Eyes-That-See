@@ -5,10 +5,11 @@
     "description": "A mobile application built for Eyes That See, a non-profit organization.",
     "scripts": {
         "buildWeb": "stencil build --prerender",
-        "buildNativeStart": "stencil build",
+        "build": "stencil build",
         "buildNative": "npm run updateNative && npm run openXcodeProject",
         "buildAssetsOnly": "stencil build && npm run updateNativeWebAssets",
-        "updateNativeWebAssets": "npx cap copy",
+        "copyAssets": "npx cap copy",
+        "updateNativeAssets": "npm run build && npm run copyAssets",
         "updateNative": "npx cap sync",
         "start": "stencil build --dev --watch --serve",
         "test": "stencil test --spec --e2e",
@@ -23,7 +24,7 @@
         "@ionic/core": "4.11.2",
         "capacitor-data-storage-sqlite": "1.2.1-9",
         "capacitor-video-player": "1.1.13",
-        "moment": "2.24.0",
+        "date-fns": "2.6.0",
         "plyr": "3.5.6",
         "rxjs": "6.5.2"
     },

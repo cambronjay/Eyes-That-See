@@ -111,8 +111,7 @@ export class ScreenStories {
                     {this.renderAvatar(item)}
                 </ion-avatar>
                 <ion-label>
-                    <h2 innerHTML={item.title}></h2>
-                    <h3 innerHTML={Utils.formatDate(item.date)}></h3>
+                    <h2 innerHTML={item.title} class="overflowFix"></h2>
                     <p innerHTML={item.excerpt}></p>
                 </ion-label>
             </ion-item>
@@ -125,6 +124,9 @@ export class ScreenStories {
                 if (this.refresher.disabled) {
                     this.refresher.disabled = false;
                 }
+                if(this.infiniteScroll.disabled) {
+                    this.infiniteScroll.disabled = false;
+                }
             }
         }
     }
@@ -134,7 +136,7 @@ export class ScreenStories {
             if (this.stories.length > 0) {
                 return (
                     <ion-list id="storiesList">
-                        <ion-virtual-scroll items={this.stories} renderItem={(item, index) => this.renderItem(item, index)} itemHeight={() => 87}></ion-virtual-scroll>
+                        <ion-virtual-scroll items={this.stories} renderItem={(item, index) => this.renderItem(item, index)} approxItemHeight={65}></ion-virtual-scroll>
                     </ion-list>
                 )
             } else {
