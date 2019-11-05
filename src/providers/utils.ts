@@ -1,6 +1,5 @@
 import moment from 'moment';
 import { isPlatform } from '@ionic/core';
-import { never } from 'rxjs';
 
 class UtilsController {
 
@@ -35,10 +34,10 @@ class UtilsController {
         return (isPlatform(window, "ios") || isPlatform(window, "android") || isPlatform(window, "capacitor") || isPlatform(window, "cordova")) ? true : false;
     }
 
-    formatDescription(description: string){
+    formatDescription(description: string) {
         let value = description;
-        let a = value.replace(/<a.*?<\/a>/g,'');
-        let i = a.replace(/<img.*?<\/img>/g,'');
+        let a = value.replace(/<a.*?<\/a>/g, '');
+        let i = a.replace(/<img.*?<\/img>/g, '');
         let ic = i.replace(/<img .*?>/g, '');
         return ic;
     }

@@ -13,6 +13,7 @@ export class AppRoot {
   @State() isLargeScreen = false;
   private router: any;
   private startScreen: any;
+  private nav: any;
   appPages = [
     {
       title: 'News',
@@ -67,63 +68,48 @@ export class AppRoot {
         currentScreen = event.detail.to;
       }
       if (this.isLargeScreen) {
-        let toNavIcon;
-        let toNavText;
-        let fromNavIcon;
-        let fromNavText;
-        if (event.detail.to.includes("story-details")) {
+        let toNavIcon = event.detail.to;
+        let toNavText = event.detail.to;
+        let fromNavIcon = event.detail.from;
+        let fromNavText = event.detail.from;
+        let isStoryDetails = false;
+        if (event.detail.to.includes("story-details") || event.detail.from.includes("story-details")) {
           toNavIcon = "/stories";
           toNavText = "/stories";
-        } else {
-          toNavIcon = event.detail.to;
-          toNavText = event.detail.to;
-        }
-        if (event.detail.from.includes("story-details")) {
           fromNavIcon = "/stories";
           fromNavText = "/stories";
-        } else {
-          fromNavIcon = event.detail.from;
-          fromNavText = event.detail.from;
+          isStoryDetails = true;
         }
         toNavIcon = toNavIcon.replace("/", "");
         toNavText = toNavText.replace("/", "");
         toNavIcon = document.querySelector(`#${toNavIcon}-icon`);
         toNavText = document.querySelector(`#${toNavText}-text`);
-        toNavIcon.setAttribute("color", "primary");
-        toNavText.setAttribute("color", "primary");
         fromNavIcon = fromNavIcon.replace("/", "");
         fromNavText = fromNavText.replace("/", "");
         fromNavIcon = document.querySelector(`#${fromNavIcon}-icon`);
         fromNavText = document.querySelector(`#${fromNavText}-text`);
-        fromNavIcon.setAttribute("color", "medium");
-        fromNavText.setAttribute("color", "medium");
+        if (isStoryDetails) {
+          toNavIcon.setAttribute("color", "primary");
+          toNavText.setAttribute("color", "primary");
+          fromNavIcon.setAttribute("color", "primary");
+          fromNavText.setAttribute("color", "primary");
+        } else {
+          toNavIcon.setAttribute("color", "primary");
+          toNavText.setAttribute("color", "primary");
+          fromNavIcon.setAttribute("color", "medium");
+          fromNavText.setAttribute("color", "medium");
+        }
       }
       currentScreen = currentScreen.replace("/", "");
-      console.log(currentScreen)
       await Storage.set("CurrentScreen", currentScreen);
     });
+    let start = this.startScreen.replace("/", "");
+    this.nav = document.querySelector("#sideMenuNav");
+    this.nav.setRoot("screen-" + start);
     try {
       await SplashScreen.hide();
     } catch {
       return;
-    }
-  }
-
-  renderStoryRoute() {
-    if (!this.isLargeScreen) {
-      return (
-        <ion-route url="/stories" component="tab-stories">
-          <ion-route component="screen-stories"></ion-route>
-          <ion-route url="/story-details/:storyId" component="screen-story-details" componentProps={{ goback: '/stories' }}></ion-route>
-        </ion-route>
-      )
-    } else {
-      return (
-        <ion-route url="/stories" component="ion-nav">
-          <ion-route component="screen-stories"></ion-route>
-          <ion-route url="/story-details/:storyId" component="screen-story-details" componentProps={{ goback: '/stories' }}></ion-route>
-        </ion-route>
-      )
     }
   }
 
@@ -133,8 +119,10 @@ export class AppRoot {
         <ion-route-redirect from="/" to={this.startScreen}></ion-route-redirect>
         <ion-route component={!this.isLargeScreen ? "menu-tabs" : "menu-nav"}>
           <ion-route url="/news" component={!this.isLargeScreen ? "tab-news" : "screen-news"}></ion-route>
-          {/* <ion-route url="/stories" component={!this.isLargeScreen ? "tab-stories" : "screen-stories"}></ion-route> */}
-          {this.renderStoryRoute()}
+          <ion-route url="/stories" component={!this.isLargeScreen ? "tab-stories" : "ion-nav"}>
+            <ion-route component="screen-stories"></ion-route>
+            <ion-route url="/story-details/:storyId" component="screen-story-details" componentProps={{ goback: '/stories' }}></ion-route>
+          </ion-route>
           <ion-route url="/projects" component={!this.isLargeScreen ? "tab-projects" : "screen-projects"}></ion-route>
           <ion-route url="/about" component={!this.isLargeScreen ? "tab-about" : "screen-about"}></ion-route>
         </ion-route>

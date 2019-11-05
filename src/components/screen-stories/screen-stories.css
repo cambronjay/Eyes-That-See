@@ -10,3 +10,6 @@
 .skeleton-30 {
     width: 30%;
 }
+.loadError {
+    text-align: center !important;
+}

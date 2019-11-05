@@ -1,4 +1,4 @@
-import { Component, h, State, Prop } from '@stencil/core';
+import { Component, h, State } from '@stencil/core';
 import { WordPressData } from "../../providers/wordpress-data";
 import { Utils } from "../../providers/utils";
 import { Observable, Subscription } from "rxjs";
@@ -10,7 +10,6 @@ import { Observable, Subscription } from "rxjs";
 
 export class ScreenStories {
     @State() stories: any;
-    @Prop({ connect: 'ion-modal-controller' }) modalCtrl: HTMLIonModalControllerElement;
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private storiesObservable: Observable<any>;
     private storiesSubscription: Subscription;
@@ -89,16 +88,6 @@ export class ScreenStories {
         this.storiesSubscription.unsubscribe();
     }
 
-    async viewStory(item: any) {
-        const modal = await this.modalCtrl.create({
-            component: 'modal-story',
-            componentProps: {
-                story: item,
-            }
-        });
-        await modal.present();
-    }
-
     renderAvatar(story) {
         if (story.thumbnail_images) {
             return (<ion-img src={story.thumbnail_images.large.url}></ion-img>)
@@ -117,22 +106,27 @@ export class ScreenStories {
 
     renderItem(item: any, index: number) {
         return (
-        <ion-item detail={false} href={`/stories/story-details/${item.id}`}>
-            <ion-avatar slot="start">
-                {this.renderAvatar(item)}
-            </ion-avatar>
-            <ion-label>
-                <h2 innerHTML={item.title}></h2>
-                <h3 innerHTML={Utils.formatDate(item.date)}></h3>
-                <p innerHTML={item.excerpt}></p>
-            </ion-label>
-        </ion-item>
+            <ion-item detail={false} href={`/stories/story-details/${item.id}`}>
+                <ion-avatar slot="start">
+                    {this.renderAvatar(item)}
+                </ion-avatar>
+                <ion-label>
+                    <h2 innerHTML={item.title}></h2>
+                    <h3 innerHTML={Utils.formatDate(item.date)}></h3>
+                    <p innerHTML={item.excerpt}></p>
+                </ion-label>
+            </ion-item>
         )
     }
 
-    enableLoaders() {
-        this.refresher.disabled = false;
-        this.infiniteScroll.disabled = false;
+    componentDidRender() {
+        if (this.stories != null) {
+            if (this.stories.length > 0) {
+                if (this.refresher.disabled) {
+                    this.refresher.disabled = false;
+                }
+            }
+        }
     }
 
     renderData() {
@@ -140,7 +134,6 @@ export class ScreenStories {
             if (this.stories.length > 0) {
                 return (
                     <ion-list id="storiesList">
-                        {this.enableLoaders()}
                         <ion-virtual-scroll items={this.stories} renderItem={(item, index) => this.renderItem(item, index)} itemHeight={() => 87}></ion-virtual-scroll>
                     </ion-list>
                 )
@@ -172,8 +165,8 @@ export class ScreenStories {
             return (
                 <ion-item lines="none" text-left>
                     <ion-label>
-                        <h3>
-                            There seems to be a problem with your connection. Pull down to refresh!
+                        <h3 class="loadError">
+                            There seems to be a problem with your connection.<br></br>Pull down to refresh!
                         </h3>
                     </ion-label>
                 </ion-item>

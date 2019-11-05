@@ -30,7 +30,9 @@ export class ScreenProjects {
         });
         this.refresher = document.querySelector("#projects-refresher");
         this.content = document.querySelector("#projects-content");
-        this.refresher.addEventListener("ionRefresh", async () => {
+        this.refresher.addEventListener("ionRefresh", async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             await Utils.wait(500);
             await WordPressData.getProjects()
                 .then(() => {
@@ -67,12 +69,18 @@ export class ScreenProjects {
         }
     }
 
-    componentDidUnload() {
-        this.projectsSubscription.unsubscribe();
+    componentDidRender() {
+        if (this.projects != null) {
+            if (this.projects.length > 0) {
+                if (this.refresher.disabled) {
+                    this.refresher.disabled = false;
+                }
+            }
+        }
     }
 
-    enableLoaders() {
-        this.refresher.disabled = false;
+    componentDidUnload() {
+        this.projectsSubscription.unsubscribe();
     }
 
     renderData() {
@@ -80,17 +88,12 @@ export class ScreenProjects {
             if (this.projects.length > 0) {
                 return (
                     <ion-list id="projectsList">
-                        {this.enableLoaders()}
                         {this.projects.map((project) => (
                             <ion-card>
                                 <ion-card-header>
                                     <ion-card-title innerHTML={project.name}></ion-card-title>
                                 </ion-card-header>
                                 <ion-card-content innerHTML={project.description}></ion-card-content>
-                                <ion-item href="#">
-                                    <ion-icon name="wifi" slot="start"></ion-icon>
-                                    <ion-label>Card Link Item 1 .activated</ion-label>
-                                </ion-item>
                             </ion-card>
                         ))}
                     </ion-list>
@@ -121,8 +124,8 @@ export class ScreenProjects {
             return (
                 <ion-item lines="none" text-left>
                     <ion-label>
-                        <h3>
-                            There seems to be a problem with your connection. Pull down to refresh!
+                        <h3 class="loadError">
+                            There seems to be a problem with your connection.<br></br>Pull down to refresh!
                         </h3>
                     </ion-label>
                 </ion-item>
@@ -141,7 +144,7 @@ export class ScreenProjects {
             </ion-header>,
 
             <ion-content id="projects-content">
-                <ion-refresher slot="fixed" id="projects-refresher">
+                <ion-refresher slot="fixed" id="projects-refresher" disabled={true}>
                     <ion-refresher-content pulling-icon="arrow-down" refreshing-spinner="crescent">
                     </ion-refresher-content>
                 </ion-refresher>

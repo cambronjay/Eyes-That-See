@@ -13,6 +13,9 @@
 .skeleton-70 {
     width: 70%;
 }
+.loadError {
+    text-align: center !important;
+}
 .img-container {
     overflow: hidden !important;
     height: 25vh;

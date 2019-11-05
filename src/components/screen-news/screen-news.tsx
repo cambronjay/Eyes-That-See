@@ -36,7 +36,9 @@ export class ScreenNews {
         });
         this.refresher = document.querySelector("#news-refresher");
         this.content = document.querySelector("#news-content");
-        this.refresher.addEventListener("ionRefresh", async () => {
+        this.refresher.addEventListener("ionRefresh", async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             await Utils.wait(500);
             await SocialData.getTwitterTimeline({ count: '5', query: 'since_id=' + this.tweets[0].id_str }, true, false)
                 .then(() => {
@@ -47,7 +49,9 @@ export class ScreenNews {
                 });
         });
         this.infiniteScroll = document.querySelector('#news-infinite-scroll');
-        this.infiniteScroll.addEventListener('ionInfinite', async () => {
+        this.infiniteScroll.addEventListener('ionInfinite', async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             await Utils.wait(500);
             await SocialData.getTwitterTimeline({ count: '5', query: 'max_id=' + this.tweets[this.tweets.length - 1].id_str }, false, true)
                 .then(() => {
@@ -85,6 +89,13 @@ export class ScreenNews {
     }
 
     componentDidRender() {
+        if (this.tweets != null) {
+            if (this.tweets.length > 0) {
+                if (this.refresher.disabled) {
+                    this.refresher.disabled = false;
+                }
+            }
+        }
         this.players = Plyr.setup('.js-player', { captions: { active: false } });
     }
 
@@ -198,17 +209,11 @@ export class ScreenNews {
         }
     }
 
-    enableLoaders() {
-        this.refresher.disabled = false;
-        this.infiniteScroll.disabled = false;
-    }
-
     renderData() {
         if (this.tweets != null) {
             if (this.tweets.length > 0) {
                 return (
                     <ion-list id="newsList">
-                        {this.enableLoaders()}
                         {this.tweets.map((tweet) => (
                             <ion-card>
                                 {this.renderReTweet(tweet)}
@@ -282,8 +287,8 @@ export class ScreenNews {
             return (
                 <ion-item lines="none" text-left>
                     <ion-label>
-                        <h3>
-                            There seems to be a problem with your connection. Pull down to refresh!
+                        <h3 class="loadError">
+                            There seems to be a problem with your connection.<br></br>Pull down to refresh!
                         </h3>
                     </ion-label>
                 </ion-item>
@@ -302,7 +307,7 @@ export class ScreenNews {
             </ion-header>,
 
             <ion-content id="news-content">
-                <ion-refresher slot="fixed" id="news-refresher">
+                <ion-refresher slot="fixed" id="news-refresher" disabled={true}>
                     <ion-refresher-content pulling-icon="arrow-down" refreshing-spinner="crescent">
                     </ion-refresher-content>
                 </ion-refresher>
