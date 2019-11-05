@@ -23,7 +23,7 @@
         "@ionic/core": "4.11.2",
         "capacitor-data-storage-sqlite": "1.2.1-9",
         "capacitor-video-player": "1.1.13",
-        "moment": "^2.24.0",
+        "moment": "2.24.0",
         "plyr": "3.5.6",
         "rxjs": "6.5.2"
     },
