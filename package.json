@@ -19,6 +19,7 @@
         "openXcodeProject": "npx cap open ios"
     },
     "dependencies": {
+        "@capacitor/android": "^1.3.0",
         "@capacitor/core": "1.3.0",
         "@capacitor/ios": "1.3.0",
         "@ionic/core": "4.11.2",
