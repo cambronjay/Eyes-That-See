@@ -321,7 +321,7 @@ export class ScreenNews {
                         </ion-col>
                     </ion-row>
                 </ion-grid>
-                <ion-infinite-scroll id="news-infinite-scroll">
+                <ion-infinite-scroll id="news-infinite-scroll" disabled={true}>
                     <ion-infinite-scroll-content loading-spinner="crescent">
                     </ion-infinite-scroll-content>
                 </ion-infinite-scroll>

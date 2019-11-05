@@ -127,13 +127,15 @@ export class AppRoot {
           fromNavIcon.setAttribute("color", "medium");
           fromNavText.setAttribute("color", "medium");
         }
-        let start = this.startScreen.replace("/", "");
-        this.nav = document.querySelector("#sideMenuNav");
-        this.nav.setRoot("screen-" + start);
       }
       currentScreen = currentScreen.replace("/", "");
       await Storage.set("CurrentScreen", currentScreen);
     });
+    if(this.isLargeScreen){
+      let start = this.startScreen.replace("/", "");
+      this.nav = document.querySelector("#sideMenuNav");
+      this.nav.setRoot("screen-" + start);
+    }
     if (Utils.isDevice()) {
       try {
         await SplashScreen.hide();
