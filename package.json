@@ -5,7 +5,7 @@
     "description": "A mobile application built for Eyes That See, a non-profit organization.",
     "scripts": {
         "buildWeb": "stencil build --prerender",
-        "buldNativeStart": "stencil build",
+        "buildNativeStart": "stencil build",
         "buildNative": "npm run updateNative && npm run openXcodeProject",
         "buildAssetsOnly": "stencil build && npm run updateNativeWebAssets",
         "updateNativeWebAssets": "npx cap copy",
