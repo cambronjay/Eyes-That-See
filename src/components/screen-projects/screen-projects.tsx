@@ -1,4 +1,4 @@
-import { Component, h, State } from '@stencil/core';
+import { Component, h, State, Prop } from '@stencil/core';
 import { WordPressData } from "../../providers/wordpress-data";
 import { Utils } from "../../providers/utils";
 import { Observable, Subscription } from "rxjs";
@@ -18,6 +18,7 @@ export class ScreenProjects {
     private menuTab: HTMLIonTabBarElement;
     private menuNav: HTMLIonListElement;
     private nav: HTMLIonNavElement;
+    @Prop({ connect: 'ion-modal-controller' }) modalCtrl: HTMLIonModalControllerElement;
 
     constructor() {
         WordPressData.loadProjects();
@@ -79,6 +80,13 @@ export class ScreenProjects {
         }
     }
 
+    async getInvolved() {
+        const modal = await this.modalCtrl.create({
+            component: 'modal-contact'
+        });
+        await modal.present();
+    }
+
     componentDidUnload() {
         this.projectsSubscription.unsubscribe();
     }
@@ -94,6 +102,18 @@ export class ScreenProjects {
                                     <ion-card-title innerHTML={project.name}></ion-card-title>
                                 </ion-card-header>
                                 <ion-card-content innerHTML={project.description}></ion-card-content>
+                                <ion-row class="ion-no-padding ion-justify-content-center">
+                                    <ion-col size="4" text-left>
+                                        <ion-button
+                                            fill="clear"
+                                            size="small"
+                                            color="primary"
+                                            onClick={() => this.getInvolved()}>
+                                            <ion-icon name="logo-twitter" slot="start"></ion-icon>
+                                            Tweet
+                                        </ion-button>
+                                    </ion-col>
+                                </ion-row>
                             </ion-card>
                         ))}
                     </ion-list>
