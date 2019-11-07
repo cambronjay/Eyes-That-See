@@ -15,6 +15,7 @@ export class MenuTabs {
                 </ion-tab>
                 <ion-tab tab="tab-projects" component="screen-projects"></ion-tab>
                 <ion-tab tab="tab-about" component="screen-about"></ion-tab>
+                <ion-tab tab="tab-events" component="screen-events"></ion-tab>
                 <ion-tab-bar slot="bottom" id="menuTab">
                     <ion-tab-button tab="tab-news">
                         <ion-icon name="today"></ion-icon>
@@ -31,6 +32,10 @@ export class MenuTabs {
                     <ion-tab-button tab="tab-about">
                         <ion-icon name="people"></ion-icon>
                         <ion-label>Who we are</ion-label>
+                    </ion-tab-button>
+                    <ion-tab-button tab="tab-events">
+                        <ion-icon name="calendar"></ion-icon>
+                        <ion-label>Events</ion-label>
                     </ion-tab-button>
                 </ion-tab-bar>
             </ion-tabs>

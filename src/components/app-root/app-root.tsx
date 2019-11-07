@@ -40,6 +40,12 @@ export class AppRoot {
       url: '/about',
       icon: 'people',
       id: 'about'
+    },
+    {
+      title: 'Events',
+      url: '/events',
+      icon: 'calendar',
+      id: 'events'
     }
   ];
 
@@ -157,6 +163,7 @@ export class AppRoot {
           </ion-route>
           <ion-route url="/projects" component={!this.isLargeScreen ? "tab-projects" : "screen-projects"}></ion-route>
           <ion-route url="/about" component={!this.isLargeScreen ? "tab-about" : "screen-about"}></ion-route>
+          <ion-route url="/events" component={!this.isLargeScreen ? "tab-events" : "screen-events"}></ion-route>
         </ion-route>
       </ion-router>
     )
