@@ -2,7 +2,8 @@ import '@ionic/core';
 import { Component, State, h } from '@stencil/core';
 import { Plugins, HapticsImpactStyle } from '@capacitor/core';
 import { Utils } from '../../providers/utils';
-import { Storage } from "../../providers/storage";
+import { Storage } from '../../providers/storage';
+import { Notifications } from '../../providers/notifications';
 const { SplashScreen, Haptics } = Plugins;
 
 @Component({
@@ -60,6 +61,9 @@ export class AppRoot {
   }
 
   async componentDidLoad() {
+    if (Utils.isDevice) {
+      Notifications.loadPushNotifications();
+    }
     if (Utils.isSmallScreen()) {
       this.tabBar = document.querySelector("#menuTab");
       this.tabBar.addEventListener("click", (event) => {
@@ -70,7 +74,7 @@ export class AppRoot {
             Haptics.impact({
               style: HapticsImpactStyle.Medium
             });
-          } catch(error){
+          } catch (error) {
 
           }
         }
@@ -85,7 +89,7 @@ export class AppRoot {
             Haptics.impact({
               style: HapticsImpactStyle.Medium
             });
-          } catch(error){
+          } catch (error) {
 
           }
         }
@@ -137,7 +141,7 @@ export class AppRoot {
       currentScreen = currentScreen.replace("/", "");
       await Storage.set("CurrentScreen", currentScreen);
     });
-    if(this.isLargeScreen){
+    if (this.isLargeScreen) {
       let start = this.startScreen.replace("/", "");
       this.nav = document.querySelector("#sideMenuNav");
       this.nav.setRoot("screen-" + start);

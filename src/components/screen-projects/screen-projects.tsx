@@ -80,9 +80,12 @@ export class ScreenProjects {
         }
     }
 
-    async getInvolved() {
+    async getInvolved(name?: string) {
         const modal = await this.modalCtrl.create({
-            component: 'modal-contact'
+            component: 'modal-contact',
+            componentProps: {
+                projectName: name,
+            }
         });
         await modal.present();
     }
@@ -108,7 +111,7 @@ export class ScreenProjects {
                                             fill="clear"
                                             size="small"
                                             color="primary"
-                                            onClick={() => this.getInvolved()}>
+                                            onClick={() => this.getInvolved(project.name)}>
                                             <ion-icon name="logo-twitter" slot="start"></ion-icon>
                                             Tweet
                                         </ion-button>

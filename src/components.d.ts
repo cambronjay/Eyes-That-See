@@ -13,7 +13,9 @@ export namespace Components {
   interface AppRoot {}
   interface MenuNav {}
   interface MenuTabs {}
-  interface ModalContact {}
+  interface ModalContact {
+    'projectName': string;
+  }
   interface ScreenAbout {}
   interface ScreenNews {}
   interface ScreenProjects {}
@@ -97,7 +99,9 @@ declare namespace LocalJSX {
   interface AppRoot {}
   interface MenuNav {}
   interface MenuTabs {}
-  interface ModalContact {}
+  interface ModalContact {
+    'projectName'?: string;
+  }
   interface ScreenAbout {}
   interface ScreenNews {}
   interface ScreenProjects {}
