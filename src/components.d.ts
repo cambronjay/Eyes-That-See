@@ -17,6 +17,7 @@ export namespace Components {
     'projectName': string;
   }
   interface ScreenAbout {}
+  interface ScreenEvents {}
   interface ScreenNews {}
   interface ScreenProjects {}
   interface ScreenStories {}
@@ -59,6 +60,12 @@ declare global {
     new (): HTMLScreenAboutElement;
   };
 
+  interface HTMLScreenEventsElement extends Components.ScreenEvents, HTMLStencilElement {}
+  var HTMLScreenEventsElement: {
+    prototype: HTMLScreenEventsElement;
+    new (): HTMLScreenEventsElement;
+  };
+
   interface HTMLScreenNewsElement extends Components.ScreenNews, HTMLStencilElement {}
   var HTMLScreenNewsElement: {
     prototype: HTMLScreenNewsElement;
@@ -88,6 +95,7 @@ declare global {
     'menu-tabs': HTMLMenuTabsElement;
     'modal-contact': HTMLModalContactElement;
     'screen-about': HTMLScreenAboutElement;
+    'screen-events': HTMLScreenEventsElement;
     'screen-news': HTMLScreenNewsElement;
     'screen-projects': HTMLScreenProjectsElement;
     'screen-stories': HTMLScreenStoriesElement;
@@ -103,6 +111,7 @@ declare namespace LocalJSX {
     'projectName'?: string;
   }
   interface ScreenAbout {}
+  interface ScreenEvents {}
   interface ScreenNews {}
   interface ScreenProjects {}
   interface ScreenStories {}
@@ -117,6 +126,7 @@ declare namespace LocalJSX {
     'menu-tabs': MenuTabs;
     'modal-contact': ModalContact;
     'screen-about': ScreenAbout;
+    'screen-events': ScreenEvents;
     'screen-news': ScreenNews;
     'screen-projects': ScreenProjects;
     'screen-stories': ScreenStories;
@@ -135,6 +145,7 @@ declare module "@stencil/core" {
       'menu-tabs': LocalJSX.MenuTabs & JSXBase.HTMLAttributes<HTMLMenuTabsElement>;
       'modal-contact': LocalJSX.ModalContact & JSXBase.HTMLAttributes<HTMLModalContactElement>;
       'screen-about': LocalJSX.ScreenAbout & JSXBase.HTMLAttributes<HTMLScreenAboutElement>;
+      'screen-events': LocalJSX.ScreenEvents & JSXBase.HTMLAttributes<HTMLScreenEventsElement>;
       'screen-news': LocalJSX.ScreenNews & JSXBase.HTMLAttributes<HTMLScreenNewsElement>;
       'screen-projects': LocalJSX.ScreenProjects & JSXBase.HTMLAttributes<HTMLScreenProjectsElement>;
       'screen-stories': LocalJSX.ScreenStories & JSXBase.HTMLAttributes<HTMLScreenStoriesElement>;

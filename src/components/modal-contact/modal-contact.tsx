@@ -1,4 +1,4 @@
-import { Component, h, State, Element, Prop } from '@stencil/core';
+import { Component, h, State, Element, Prop, Listen } from '@stencil/core';
 import { Mailgun } from '../../providers/mailgun';
 
 @Component({
@@ -12,11 +12,37 @@ export class ModalContact {
   @State() email: string;
   @Element() el: any;
   @Prop() projectName: string;
+  @Prop({ connect: 'ion-alert-controller' }) alertCtrl: HTMLIonAlertControllerElement;
+  @Prop({ connect: 'ion-loading-controller' }) loadingCtrl: HTMLIonLoadingControllerElement;
+  @Listen('ionLoadingWillDismiss', { target: 'body' })
+  async loadingWillDismiss(emailResponse: any) {
+    if(emailResponse.detail.data == 2) {
+      this.dismiss(emailResponse.detail.data);
+    } else {
+      await this.showAlert();
+    }
+  }
 
-  joinProject(event) {
+  async joinProject(event) {
     event.preventDefault();
     event.stopPropagation();
-    Mailgun.sendEmail(this.projectName, this.firstName, this.lastName, this.email);
+    const loading = await this.loadingCtrl.create({
+      message: `Adding you to the list`
+    });
+    await loading.present();
+    const emailResponse = await Mailgun.sendVolunteerEmail(this.projectName, this.firstName, this.lastName, this.email);
+    await loading.dismiss(emailResponse);
+  }
+
+  async showAlert() {
+    const alert = await this.alertCtrl.create({
+      header: 'Something went wrong. Please try to join again.',
+      buttons: [{
+        text: 'OK',
+        handler: () => {}
+      }]
+    });
+    await alert.present();
   }
 
   updateFirstName(event) {

@@ -105,15 +105,15 @@ export class ScreenProjects {
                                     <ion-card-title innerHTML={project.name}></ion-card-title>
                                 </ion-card-header>
                                 <ion-card-content innerHTML={project.description}></ion-card-content>
-                                <ion-row class="ion-no-padding ion-justify-content-center">
+                                <ion-row class="ion-no-padding ion-justify-content-left">
                                     <ion-col size="4" text-left>
                                         <ion-button
                                             fill="clear"
                                             size="small"
                                             color="primary"
                                             onClick={() => this.getInvolved(project.name)}>
-                                            <ion-icon name="logo-twitter" slot="start"></ion-icon>
-                                            Tweet
+                                            <ion-icon name="clipboard" slot="start"></ion-icon>
+                                            Volunteer for this project
                                         </ion-button>
                                     </ion-col>
                                 </ion-row>

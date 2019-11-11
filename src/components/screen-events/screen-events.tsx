@@ -1,7 +1,8 @@
-import { Component, h, State, Prop } from '@stencil/core';
+import { Component, h, State, Prop } from "@stencil/core";
 import { WordPressData } from "../../providers/wordpress-data";
 import { Utils } from "../../providers/utils";
 import { Observable, Subscription } from "rxjs";
+import { Calendar } from "@ionic-native/calendar";
 
 @Component({
     tag: 'screen-events',
@@ -18,7 +19,6 @@ export class ScreenEvents {
     private menuTab: HTMLIonTabBarElement;
     private menuNav: HTMLIonListElement;
     private nav: HTMLIonNavElement;
-    @Prop({ connect: 'ion-modal-controller' }) modalCtrl: HTMLIonModalControllerElement;
 
     constructor() {
         WordPressData.loadEvents();
@@ -80,14 +80,11 @@ export class ScreenEvents {
         }
     }
 
-    async getInvolved(name?: string) {
-        const modal = await this.modalCtrl.create({
-            component: 'modal-contact',
-            componentProps: {
-                projectName: name,
-            }
-        });
-        await modal.present();
+    addEvent(event: any) {
+        Calendar.createEventInteractively(event.title, event.location, event.description, event.startDate, event.endDate).then(
+            (msg) => { },
+            (err) => { }
+          );
     }
 
     componentDidUnload() {
@@ -99,21 +96,23 @@ export class ScreenEvents {
             if (this.events.length > 0) {
                 return (
                     <ion-list id="eventsList">
-                        {this.events.map((project) => (
+                        {this.events.map((event) => (
                             <ion-card>
+                                <ion-img src={event.image}></ion-img>
                                 <ion-card-header>
-                                    <ion-card-title innerHTML={project.name}></ion-card-title>
+                                    <ion-card-subtitle innerHTML={Utils.formatDate(event.startDate) + '-' + Utils.formatDate(event.endDate)}></ion-card-subtitle>
+                                    <ion-card-title innerHTML={event.title}></ion-card-title>
                                 </ion-card-header>
-                                <ion-card-content innerHTML={project.description}></ion-card-content>
-                                <ion-row class="ion-no-padding ion-justify-content-center">
+                                <ion-card-content innerHTML={event.description}></ion-card-content>
+                                <ion-row class="ion-no-padding ion-justify-content-left">
                                     <ion-col size="4" text-left>
                                         <ion-button
                                             fill="clear"
                                             size="small"
                                             color="primary"
-                                            onClick={() => this.getInvolved(project.name)}>
-                                            <ion-icon name="logo-twitter" slot="start"></ion-icon>
-                                            Tweet
+                                            onClick={() => this.addEvent(event)}>
+                                            <ion-icon name="calendar" slot="start"></ion-icon>
+                                            Add to calendar
                                         </ion-button>
                                     </ion-col>
                                 </ion-row>
@@ -126,8 +125,12 @@ export class ScreenEvents {
                     <ion-list>
                         {this.skeleton.map(() => (
                             <ion-card>
+                                <ion-thumbnail class="skeleton-card-image" slot="start">
+                                    <ion-skeleton-text animated></ion-skeleton-text>
+                                </ion-thumbnail>
                                 <ion-card-header>
-                                    <ion-skeleton-text animated class="skeleton-50"></ion-skeleton-text>
+                                    <ion-card-subtitle><ion-skeleton-text animated class="skeleton-30"></ion-skeleton-text></ion-card-subtitle>
+                                    <ion-card-title><ion-skeleton-text animated class="skeleton-50"></ion-skeleton-text></ion-card-title>
                                 </ion-card-header>
                                 <ion-card-content>
                                     <ion-item lines="none" text-left>

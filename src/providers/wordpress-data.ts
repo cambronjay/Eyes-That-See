@@ -7,6 +7,8 @@ class WordPressDataController {
     private stories: any = [];
     public projectsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
     private projects: any = [];
+    public eventsSubject: BehaviorSubject<any> = new BehaviorSubject<any>([]);
+    private events: any = [];
 
     constructor() { }
 
@@ -35,6 +37,20 @@ class WordPressDataController {
             }
         } else {
             this.projectsSubject.next(this.projects);
+        }
+    }
+
+    async loadEvents(): Promise<any> {
+        if (this.events.length == 0) {
+            const storedData = await Storage.get("ScreenEvents");
+            if (storedData != null) {
+                this.events = storedData;
+                this.eventsSubject.next(storedData);
+            } else {
+                this.getEvents();
+            }
+        } else {
+            this.storiesSubject.next(this.events);
         }
     }
 
@@ -107,6 +123,34 @@ class WordPressDataController {
             }
         }
     }
+
+    async getEvents(): Promise<any> {
+        const url = `https://us-central1-api-project-324114021707.cloudfunctions.net/getEvents`;
+        try {
+            const response = await Utils.fetch(url, {
+                method: 'GET'
+            });
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            } else {
+                let json = await response.json();
+                this.events = json;
+                this.eventsSubject.next(this.events);
+                await Storage.set("ScreenEvents", this.events);
+            }
+        }
+        catch (error) {
+            const storedData = await Storage.get("ScreenEvents");
+            if (storedData != null) {
+                this.events = storedData;
+                this.eventsSubject.next(storedData);
+            } else {
+                this.events = [];
+                this.eventsSubject.next(null);
+            }
+        }
+    }
+
 }
 
 export const WordPressData = new WordPressDataController();
