@@ -9,7 +9,7 @@ import { Observable, Subscription } from "rxjs";
 })
 
 export class ScreenStories {
-    @State() stories: any = [];
+    @State() stories: any;
     public skeleton = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     private storiesObservable: Observable<any>;
     private storiesSubscription: Subscription;
@@ -20,7 +20,6 @@ export class ScreenStories {
     private menuTab: HTMLIonTabBarElement;
     private menuNav: HTMLIonListElement;
     private nav: HTMLIonNavElement;
-    private virtualScroll: HTMLIonVirtualScrollElement;
 
     constructor() {
         WordPressData.loadStories();
@@ -31,8 +30,6 @@ export class ScreenStories {
         this.storiesSubscription = this.storiesObservable.subscribe(data => {
             this.stories = data;
         });
-        this.virtualScroll = document.querySelector("ion-virtual-scroll");
-        this.virtualScroll.checkRange(this.stories.length);
         this.refresher = document.querySelector("#stories-refresher");
         this.content = document.querySelector("#stories-content");
         this.refresher.addEventListener("ionRefresh", async (event) => {
