@@ -84,7 +84,11 @@ export class ScreenEvents {
         Calendar.createEventInteractively(event.title, event.location, event.description, event.startDate, event.endDate).then(
             (msg) => { },
             (err) => { }
-          );
+        );
+    }
+
+    renderMedia(event) {
+        return (<ion-img src={event.image}></ion-img>);
     }
 
     componentDidUnload() {
@@ -98,7 +102,7 @@ export class ScreenEvents {
                     <ion-list id="eventsList">
                         {this.events.map((event) => (
                             <ion-card>
-                                <ion-img src={event.image}></ion-img>
+                                {this.renderMedia(event)}
                                 <ion-card-header>
                                     <ion-card-subtitle innerHTML={Utils.formatDate(event.startDate) + '-' + Utils.formatDate(event.endDate)}></ion-card-subtitle>
                                     <ion-card-title innerHTML={event.title}></ion-card-title>
