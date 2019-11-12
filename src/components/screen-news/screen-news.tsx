@@ -94,7 +94,7 @@ export class ScreenNews {
                 if (this.refresher.disabled) {
                     this.refresher.disabled = false;
                 }
-                if(this.infiniteScroll.disabled) {
+                if (this.infiniteScroll.disabled) {
                     this.infiniteScroll.disabled = false;
                 }
             }
