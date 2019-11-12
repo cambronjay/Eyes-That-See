@@ -2,3 +2,7 @@
     align-items: center !important;
     justify-content: center !important;
  }
+
+ ion-list {
+     background: #232323 !important;
+ }

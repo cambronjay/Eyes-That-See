@@ -16,10 +16,10 @@ export class ModalContact {
   @Prop({ connect: 'ion-loading-controller' }) loadingCtrl: HTMLIonLoadingControllerElement;
   @Listen('ionLoadingWillDismiss', { target: 'body' })
   async loadingWillDismiss(emailResponse: any) {
-    if(emailResponse.detail.data == 2) {
-      this.dismiss(emailResponse.detail.data);
+    if (emailResponse.detail.data == 2) {
+      await this.showSuccess();
     } else {
-      await this.showAlert();
+      await this.showFailure();
     }
   }
 
@@ -34,12 +34,25 @@ export class ModalContact {
     await loading.dismiss(emailResponse);
   }
 
-  async showAlert() {
+  async showFailure() {
     const alert = await this.alertCtrl.create({
       header: 'Something went wrong. Please try to join again.',
       buttons: [{
         text: 'OK',
-        handler: () => {}
+        handler: () => { }
+      }]
+    });
+    await alert.present();
+  }
+
+  async showSuccess() {
+    const alert = await this.alertCtrl.create({
+      header: 'Thanks for volunteering!',
+      buttons: [{
+        text: 'OK',
+        handler: () => {
+          this.dismiss();
+        }
       }]
     });
     await alert.present();
@@ -64,8 +77,8 @@ export class ModalContact {
   }
 
 
-  dismiss(data?: any) {
-    (this.el.closest('ion-modal') as any).dismiss(data);
+  dismiss() {
+    (this.el.closest('ion-modal') as any).dismiss();
   }
 
   render() {
