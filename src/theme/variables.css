@@ -63,8 +63,8 @@
   --ion-color-danger-shade: #d33939;
   --ion-color-danger-tint: #f25454;
 
-  --ion-color-dark: #222428;
-  --ion-color-dark-rgb: 34, 34, 34;
+  --ion-color-dark: #232323;
+  --ion-color-dark-rgb: 35, 35, 35;
   --ion-color-dark-contrast: #ffffff;
   --ion-color-dark-contrast-rgb: 255, 255, 255;
   --ion-color-dark-shade: #1e2023;
@@ -291,4 +291,8 @@
     --ion-color-step-900: #e8e8e8;
     --ion-color-step-950: #f3f3f3;
   }
+
+  .item, .list, .item-content, .item-complex {
+    --ion-background-color: transparent !important;
+    }
 /* } */
