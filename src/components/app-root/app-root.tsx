@@ -178,7 +178,7 @@ export class AppRoot {
       <ion-app>
         {this.renderRouter()}
         <ion-split-pane content-id="menu-content" when="md">
-          <ion-menu content-id="menu-content">
+          <ion-menu content-id="menu-content" swipe-gesture={false} maxEdgeStart={0}>
             <ion-header>
               <ion-toolbar>
                 <ion-title>Navigate</ion-title>
